@@ -15,6 +15,13 @@
       "when": 1767788341320,
       "tag": "0001_burly_tyrannus",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1767789107106,
+      "tag": "0002_famous_lifeguard",
+      "breakpoints": true
     }
   ]
 }
