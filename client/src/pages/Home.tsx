@@ -1,286 +1,352 @@
-import Layout from "@/components/Layout";
-import StatCard from "@/components/StatCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { 
   AlertTriangle, 
   CheckCircle2, 
-  Clock, 
-  FileWarning, 
   TrendingUp,
-  Activity,
-  MapPin
+  Target,
+  Zap,
+  Shield
 } from "lucide-react";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend
-} from "recharts";
-
-// Dados extraídos da análise
-const stats = {
-  total: 737,
-  alto: 276,
-  medio: 251,
-  baixo: 163,
-  concluidas: 290,
-  a_iniciar: 390,
-  percentual_concluido: 39.3,
-  percentual_alto: 37.4
-};
-
-const dadosPorGrau = [
-  { name: 'Alto', value: 276, color: '#dc2626' }, // red-600
-  { name: 'Médio', value: 251, color: '#f59e0b' }, // amber-500
-  { name: 'Baixo', value: 163, color: '#10b981' }, // emerald-500
-  { name: 'Crítico', value: 2, color: '#7f1d1d' }, // red-900
-];
-
-const topAreas = [
-  { name: 'Xarope', value: 45 },
-  { name: 'SPX', value: 43 },
-  { name: 'JBT', value: 26 },
-  { name: 'Mistura Líquida', value: 24 },
-  { name: 'CDM', value: 24 },
-  { name: 'Padronização', value: 24 },
-  { name: 'Caldeira', value: 19 },
-];
-
-const statusAcoes = [
-  { name: 'A Iniciar', value: 390, color: '#ef4444' },
-  { name: 'Concluída', value: 290, color: '#10b981' },
-  { name: 'Cancelada', value: 12, color: '#6b7280' },
-  { name: 'Outros', value: 6, color: '#3b82f6' },
-];
-
-const evolucaoAnual = [
-  { ano: '2024', registros: 244 },
-  { ano: '2025', registros: 448 },
-];
 
 export default function Home() {
   return (
-    <Layout>
-      <div className="space-y-8 animate-in fade-in duration-500">
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-display font-bold text-foreground tracking-tight">
-              Visão Geral de Riscos
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Monitoramento em tempo real das condições de SST e planos de ação.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-card px-4 py-2 rounded-full border shadow-sm">
-            <Clock className="h-4 w-4" />
-            <span>Última atualização: Jan 07, 2026</span>
-          </div>
-        </div>
-
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard 
-            title="Total de Registros" 
-            value={stats.total} 
-            icon={FileWarning}
-            description="Condições identificadas"
-            trend={{ value: 83.6, isPositive: false }}
-          />
-          <StatCard 
-            title="Riscos Altos" 
-            value={stats.alto} 
-            icon={AlertTriangle}
-            variant="danger"
-            description={`${stats.percentual_alto}% do total`}
-          />
-          <StatCard 
-            title="Ações Concluídas" 
-            value={stats.concluidas} 
-            icon={CheckCircle2}
-            variant="success"
-            description={`${stats.percentual_concluido}% de resolução`}
-          />
-          <StatCard 
-            title="Ações Pendentes" 
-            value={stats.a_iniciar} 
-            icon={Clock}
-            variant="warning"
-            description="Aguardando início"
-          />
-        </div>
-
-        {/* Main Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          {/* Severity Distribution */}
-          <Card className="lg:col-span-1 shadow-md border-t-4 border-t-primary">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-primary" />
-                Severidade dos Riscos
-              </CardTitle>
-              <CardDescription>Distribuição por grau de risco</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={dadosPorGrau}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {dadosPorGrau.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} strokeWidth={0} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                  />
-                  <Legend verticalAlign="bottom" height={36} iconType="circle" />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Top Areas Chart */}
-          <Card className="lg:col-span-2 shadow-md border-t-4 border-t-primary">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-primary" />
-                Áreas Críticas
-              </CardTitle>
-              <CardDescription>Setores com maior concentração de ocorrências</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={topAreas}
-                  layout="vertical"
-                  margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#e5e7eb" />
-                  <XAxis type="number" hide />
-                  <YAxis 
-                    dataKey="name" 
-                    type="category" 
-                    width={100} 
-                    tick={{ fontSize: 12, fill: '#64748b' }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <Tooltip 
-                    cursor={{ fill: 'transparent' }}
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                  />
-                  <Bar dataKey="value" fill="var(--primary)" radius={[0, 4, 4, 0]} barSize={20}>
-                    {topAreas.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={`hsl(var(--primary) / ${1 - index * 0.1})`} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Secondary Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
-          {/* Action Status */}
-          <Card className="shadow-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-primary" />
-                Status das Ações
-              </CardTitle>
-              <CardDescription>Progresso das medidas corretivas</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[250px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={statusAcoes} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
-                  <Tooltip 
-                    cursor={{ fill: '#f3f4f6' }}
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                  />
-                  <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={40}>
-                    {statusAcoes.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Yearly Evolution */}
-          <Card className="shadow-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
-                Evolução Temporal
-              </CardTitle>
-              <CardDescription>Crescimento do volume de registros (2024-2025)</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[250px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={evolucaoAnual} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                  <XAxis dataKey="ano" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
-                  <Tooltip 
-                    cursor={{ fill: '#f3f4f6' }}
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                  />
-                  <Bar dataKey="registros" fill="var(--primary)" radius={[4, 4, 0, 0]} barSize={60} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Critical Alerts Section */}
-        <Card className="border-l-4 border-l-destructive bg-destructive/5 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-destructive flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5" />
-              Atenção Necessária
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3 p-3 bg-background rounded-lg border border-destructive/20">
-                <div className="h-2 w-2 mt-2 rounded-full bg-destructive shrink-0" />
-                <div>
-                  <p className="font-medium text-foreground">Alto volume de ações "A Iniciar"</p>
-                  <p className="text-sm text-muted-foreground">52.9% das ações corretivas ainda não foram iniciadas, representando um passivo de risco significativo.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 p-3 bg-background rounded-lg border border-destructive/20">
-                <div className="h-2 w-2 mt-2 rounded-full bg-destructive shrink-0" />
-                <div>
-                  <p className="font-medium text-foreground">Concentração em Xarope e SPX</p>
-                  <p className="text-sm text-muted-foreground">Estas duas áreas representam mais de 11% de todos os riscos identificados na fábrica.</p>
-                </div>
-              </div>
+    <div className="min-h-screen bg-background">
+      {/* Header com Logo */}
+      <header className="bg-gradient-to-r from-primary to-primary/80 text-white py-8 px-4 md:px-8">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <img src="/images/mococa-logo.png" alt="Mococa" className="h-16 md:h-20" />
+            <div>
+              <h1 className="text-2xl md:text-4xl font-display font-bold">RELATÓRIO SST</h1>
+              <p className="text-blue-100 text-sm md:text-base">Gestão de Saúde e Segurança do Trabalho</p>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    </Layout>
+          </div>
+          <div className="text-right text-sm md:text-base">
+            <p className="text-blue-100">Análise Completa</p>
+            <p className="font-semibold">Jan 2026</p>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-6xl mx-auto px-4 md:px-8 py-12">
+        
+        {/* Executive Summary */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-display font-bold text-primary mb-6">Resumo Executivo</h2>
+          
+          <Card className="border-l-4 border-l-secondary shadow-lg">
+            <CardContent className="pt-6">
+              <p className="text-lg text-foreground leading-relaxed mb-4">
+                A análise da planilha de Gestão SST revelou um panorama crítico que demanda ação imediata. 
+                Foram identificados <span className="font-bold text-primary">737 registros</span> de condições de risco 
+                e acidentes, com uma concentração preocupante de <span className="font-bold text-destructive">71,5%</span> 
+                classificados como Alto ou Médio risco.
+              </p>
+              <p className="text-lg text-foreground leading-relaxed">
+                Embora o sistema de gestão demonstre maturidade na identificação de riscos, o alto percentual de 
+                ações não iniciadas (52,9%) e a distribuição desigual de responsabilidades indicam a necessidade 
+                de reforço operacional e investimentos estruturais significativos.
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Key Metrics */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-display font-bold text-primary mb-6">Indicadores Principais</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="border-t-4 border-t-destructive hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Total de Riscos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-display font-bold text-destructive">737</div>
+                <p className="text-xs text-muted-foreground mt-2">Condições identificadas</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-t-4 border-t-destructive hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Riscos Altos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-display font-bold text-destructive">276</div>
+                <p className="text-xs text-muted-foreground mt-2">37,4% do total</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-t-4 border-t-secondary hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Riscos Médios</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-display font-bold text-secondary">251</div>
+                <p className="text-xs text-muted-foreground mt-2">34,1% do total</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-t-4 border-t-emerald-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Ações Concluídas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-display font-bold text-emerald-600">290</div>
+                <p className="text-xs text-muted-foreground mt-2">39,3% de resolução</p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* What's Happening */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-display font-bold text-primary mb-6">O Que Está Acontecendo</h2>
+          
+          <div className="space-y-4">
+            <Card className="border-l-4 border-l-destructive bg-destructive/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-destructive">
+                  <AlertTriangle className="h-5 w-5" />
+                  Passivo Crítico de Ações
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-foreground mb-3">
+                  <span className="font-bold">52,9% das ações corretivas (390 itens)</span> ainda não foram iniciadas, 
+                  representando um passivo significativo de riscos não tratados. Apenas 39,3% das ações foram concluídas.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Impacto: Exposição prolongada de colaboradores a condições de risco, aumento da probabilidade de acidentes.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-destructive bg-destructive/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-destructive">
+                  <TrendingUp className="h-5 w-5" />
+                  Aumento Exponencial de Registros
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-foreground mb-3">
+                  Crescimento de <span className="font-bold">83,6%</span> no número de registros entre 2024 (244) e 2025 (448). 
+                  Isso pode indicar melhoria na cultura de reporte, mas também pode refletir aumento real de condições de risco.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Impacto: Necessidade de ampliação de recursos humanos e orçamentários para gestão eficaz.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-destructive bg-destructive/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-destructive">
+                  <Shield className="h-5 w-5" />
+                  Concentração em Áreas Específicas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-foreground mb-3">
+                  As áreas de <span className="font-bold">Xarope (45 registros) e SPX (43 registros)</span> concentram 
+                  mais de <span className="font-bold">11%</span> de todos os riscos identificados. Estas são zonas críticas que demandam atenção prioritária.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Impacto: Risco elevado de acidentes nestes setores, necessidade de intervenções estruturais urgentes.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-secondary bg-secondary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-secondary">
+                  <Zap className="h-5 w-5" />
+                  Sobrecarga na Área de Manutenção
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-foreground mb-3">
+                  A área de <span className="font-bold">Manutenção é responsável por 63,9% (471 ações)</span> de todas as 
+                  ações corretivas, indicando que a maioria dos riscos está relacionada a aspectos estruturais e de equipamentos.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Impacto: Possível gargalo operacional, demanda por recursos e planejamento adequados.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Improvements Needed */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-display font-bold text-primary mb-6">Melhorias Necessárias</h2>
+          
+          <div className="space-y-4">
+            <Card className="border-l-4 border-l-primary hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-primary" />
+                  1. Priorização Urgente de Ações
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-foreground">
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Estabelecer um plano de ação imediato para os 390 itens "A iniciar", priorizando riscos Alto e Crítico</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Definir prazos realistas e responsáveis para cada ação</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Implementar sistema de acompanhamento com métricas de progresso</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-primary hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-primary" />
+                  2. Reforço da Equipe de Manutenção
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-foreground">
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Ampliar a equipe de manutenção dado o volume de 471 ações sob sua responsabilidade</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Investir em treinamento especializado para equipamentos críticos</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Implementar manutenção preventiva para reduzir emergências</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-primary hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-primary" />
+                  3. Foco nas Áreas Críticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-foreground">
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Implementar auditorias e inspeções mais frequentes em Xarope e SPX</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Designar um gestor de risco específico para cada área crítica</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Priorizar investimentos estruturais nestes setores</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-primary hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-primary" />
+                  4. Investimento em Infraestrutura
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-foreground">
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Priorizar melhorias estruturais: pisos, painéis elétricos, sistemas de drenagem</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Investir em iluminação adequada nos setores de risco</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Implementar sistemas de proteção (guarda-corpos, linhas de vida) em áreas críticas</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-primary hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-primary" />
+                  5. Gestão Eficiente de Prazos
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-foreground">
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Estabelecer sistema rigoroso de acompanhamento de prazos</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Implementar alertas automáticos para ações atrasadas</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-primary font-bold mt-1">•</span>
+                    <span>Reduzir o percentual de ações não iniciadas de 52,9% para menos de 20%</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Conclusion */}
+        <section className="mb-12">
+          <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-2 border-primary">
+            <CardHeader>
+              <CardTitle className="text-2xl text-primary">Conclusão</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-lg text-foreground leading-relaxed">
+                O sistema de gestão SST da Mococa demonstra maturidade na identificação de riscos, porém enfrenta 
+                desafios operacionais significativos. Com 737 registros documentados e 71,5% classificados como Alto ou Médio, 
+                a situação demanda ação estratégica imediata.
+              </p>
+              <p className="text-lg text-foreground leading-relaxed">
+                A implementação das melhorias propostas, com foco em priorização de ações, reforço de recursos humanos 
+                e investimentos estruturais, é essencial para reduzir a exposição de colaboradores a riscos e garantir 
+                um ambiente de trabalho seguro e produtivo.
+              </p>
+              <p className="text-lg text-foreground font-semibold text-primary">
+                Recomenda-se iniciar as ações prioritárias imediatamente, com revisão de progresso mensal.
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-primary text-white py-8 px-4 md:px-8 mt-12">
+        <div className="max-w-6xl mx-auto text-center">
+          <p className="text-sm text-blue-100">
+            Relatório de Análise de Gestão SST - Mococa | Janeiro 2026
+          </p>
+          <p className="text-xs text-blue-200 mt-2">
+            Dados baseados em análise completa da planilha de Condições de Riscos
+          </p>
+        </div>
+      </footer>
+    </div>
   );
 }
