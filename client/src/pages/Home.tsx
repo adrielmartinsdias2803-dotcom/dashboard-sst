@@ -60,6 +60,17 @@ export default function Home() {
     await forceSyncMutation.mutateAsync();
   };
 
+  const handlePowerBIAccess = () => {
+    const powerbiUrl = "https://app.powerbi.com/groups/me/reports/5a087ca6-f606-4cb2-af76-6a3ca94a08c2/868e18c05a0d8320c33c?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&experience=power-bi";
+    try {
+      window.open(powerbiUrl, "_blank");
+      toast.success("Abrindo Dashboard PowerBI...");
+    } catch (error) {
+      toast.error("Não foi possível abrir o link. Tente copiar e colar manualmente no navegador.");
+      navigator.clipboard.writeText(powerbiUrl);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50">
       {/* Header Premium */}
@@ -119,17 +130,16 @@ export default function Home() {
                   </>
                 )}
               </Button>
-              <a 
-                href="https://app.powerbi.com/groups/me/reports/5a087ca6-f606-4cb2-af76-6a3ca94a08c2/868e18c05a0d8320c33c?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&experience=power-bi"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-primary to-blue-700 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:from-primary/90 hover:to-blue-700/90"
+              <button
+                onClick={handlePowerBIAccess}
+                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-primary to-blue-700 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:from-primary/90 hover:to-blue-700/90 cursor-pointer"
+                title="Abrir Dashboard PowerBI em nova aba"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
                 </svg>
                 Dashboard PowerBI
-              </a>
+              </button>
               <a 
                 href="https://mococa.sharepoint.com/:x:/s/msteams_6115f4_553804/IQAC1WtO39XDR6XhDrcEMBqNAaEW-EuEv7JV7Io_fYzQaxs?email=sandy.nascimento%40mococa.com.br&e=BlyQSz"
                 target="_blank"
