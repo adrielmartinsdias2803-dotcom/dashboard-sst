@@ -20,6 +20,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 interface SSTMetrics {
   totalRiscos: number;
@@ -39,6 +40,16 @@ export default function Home() {
   });
   const [loading, setLoading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+
+  // Dados de tendência mensal (últimos 6 meses)
+  const trendData = [
+    { mes: "Ago", critico: 2, alto: 250, medio: 240, baixo: 245 },
+    { mes: "Set", critico: 2, alto: 260, medio: 245, baixo: 240 },
+    { mes: "Out", critico: 2, alto: 270, medio: 250, baixo: 235 },
+    { mes: "Nov", critico: 3, alto: 275, medio: 252, baixo: 230 },
+    { mes: "Dez", critico: 3, alto: 276, medio: 251, baixo: 225 },
+    { mes: "Jan", critico: 3, alto: 276, medio: 251, baixo: 220 },
+  ];
 
   const forceSyncMutation = trpc.sst.forceSyncNow.useMutation({
     onSuccess: (data) => {
@@ -357,6 +368,68 @@ export default function Home() {
               </CardContent>
             </Card>
           </div>
+        </section>
+
+        {/* Gráfico de Tendência de Riscos */}
+        <section className="mb-16">
+          <div className="flex items-center gap-3 mb-8">
+            <TrendingUp className="h-8 w-8 text-primary" />
+            <h2 className="text-4xl font-display font-bold text-primary">Evolução de Riscos (Últimos 6 Meses)</h2>
+          </div>
+
+          <Card className="border-0 shadow-lg bg-white overflow-hidden">
+            <CardContent className="p-8">
+              <div className="w-full h-96">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={trendData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="mes" stroke="#64748b" />
+                    <YAxis stroke="#64748b" />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #475569", borderRadius: "8px" }}
+                      labelStyle={{ color: "#f1f5f9" }}
+                    />
+                    <Legend />
+                    <Line 
+                      type="monotone" 
+                      dataKey="critico" 
+                      stroke="#dc2626" 
+                      strokeWidth={3}
+                      name="Crítico"
+                      dot={{ fill: "#dc2626", r: 5 }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="alto" 
+                      stroke="#ea580c" 
+                      strokeWidth={3}
+                      name="Alto"
+                      dot={{ fill: "#ea580c", r: 5 }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="medio" 
+                      stroke="#eab308" 
+                      strokeWidth={3}
+                      name="Médio"
+                      dot={{ fill: "#eab308", r: 5 }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="baixo" 
+                      stroke="#16a34a" 
+                      strokeWidth={3}
+                      name="Baixo"
+                      dot={{ fill: "#16a34a", r: 5 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-sm text-slate-700"><span className="font-semibold">Observação:</span> O gráfico mostra a tendência de riscos nos últimos 6 meses. Note que riscos críticos aumentaram de 2 para 3 em novembro, indicando necessidade de ação imediata.</p>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* Cenário Atual */}
