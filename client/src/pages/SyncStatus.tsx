@@ -207,7 +207,7 @@ export default function SyncStatus() {
             ) : (
               <>
                 <RefreshCw className="h-4 w-4" />
-                Forçar Sincronização Agora
+                Sincronização
               </>
             )}
           </Button>

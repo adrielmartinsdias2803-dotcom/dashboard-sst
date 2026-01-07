@@ -103,12 +103,12 @@ export default function Home() {
             ) : (
               <>
                 <RefreshCw className="h-4 w-4" />
-                Forçar Sincronização
+                Sincronização
               </>
             )}
           </Button>
           <a 
-            href="https://app.powerbi.com/links/msbdKkK4g_?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&pbi_source=linkShare&bookmarkGuid=2597a280-9448-40cd-99f5-99b6ab80e143"
+            href="https://app.powerbi.com/groups/me/reports/5a087ca6-f606-4cb2-af76-6a3ca94a08c2/868e18c05a0d8320c33c?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&experience=power-bi"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-md"
