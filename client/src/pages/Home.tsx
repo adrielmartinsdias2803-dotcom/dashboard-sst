@@ -263,110 +263,74 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Critérios de Classificação de Risco */}
+           {/* Legenda – Classificação de Risco */}
         <section className="mb-16">
           <div className="flex items-center gap-3 mb-8">
             <Shield className="h-8 w-8 text-primary" />
-            <h2 className="text-4xl font-display font-bold text-primary">Por Que Classificamos Assim?</h2>
+            <h2 className="text-4xl font-display font-bold text-primary">Legenda – Classificação de Risco | Segurança do Trabalho</h2>
           </div>
-          <p className="text-slate-600 text-lg mb-12 max-w-3xl">Conheça os critérios que a Mococa utiliza para classificar cada nível de risco:</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {/* Risco Crítico */}
-            <Card className="border-l-4 border-l-red-600 bg-gradient-to-br from-red-50 to-red-100/50 hover:shadow-xl transition-all duration-300">
+          <div className="space-y-6 mb-12">
+            {/* Risco Baixo */}
+            <Card className="border-l-4 border-l-green-600 bg-gradient-to-br from-green-50 to-white hover:shadow-lg transition-all duration-300">
               <CardContent className="p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <Flame className="h-8 w-8 text-red-600" />
-                  <h3 className="text-2xl font-bold text-red-700">Risco Crítico</h3>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <p className="font-semibold text-slate-800 text-sm">POR QUE ACHAMOS QUE É:</p>
-                    <p className="text-slate-700 text-sm leading-relaxed mt-2">Pode causar morte, ferimentos graves ou doenças ocupacionais severas. Requer parada imediata da atividade.</p>
-                  </div>
-                  <div className="pt-3 border-t border-red-200">
-                    <p className="font-semibold text-slate-800 text-sm mb-2">Critérios:</p>
-                    <ul className="text-slate-700 text-sm space-y-1">
-                      <li>• Probabilidade alta + Consequências severas</li>
-                      <li>• Falta de proteção em máquinas</li>
-                      <li>• Exposição a produtos tóxicos</li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Risco Alto */}
-            <Card className="border-l-4 border-l-orange-600 bg-gradient-to-br from-orange-50 to-orange-100/50 hover:shadow-xl transition-all duration-300">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <AlertTriangle className="h-8 w-8 text-orange-600" />
-                  <h3 className="text-2xl font-bold text-orange-700">Risco Alto</h3>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <p className="font-semibold text-slate-800 text-sm">POR QUE É ALTO:</p>
-                    <p className="text-slate-700 text-sm leading-relaxed mt-2">Probabilidade significativa de causar lesões ou doenças. Precisa de correção urgente em curto prazo.</p>
-                  </div>
-                  <div className="pt-3 border-t border-orange-200">
-                    <p className="font-semibold text-slate-800 text-sm mb-2">Critérios:</p>
-                    <ul className="text-slate-700 text-sm space-y-1">
-                      <li>• Probabilidade média/alta + Consequências moderadas</li>
-                      <li>• Pisos escorregadios sem sinalização</li>
-                      <li>• Falta de ventilação adequada</li>
-                    </ul>
+                <div className="flex items-start gap-4">
+                  <div className="text-5xl">🟢</div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-green-700 mb-3">Risco Baixo</h3>
+                    <p className="text-slate-700 mb-3"><span className="font-semibold">Condição segura.</span> Perigos identificados estão controlados. Atividade pode ser executada conforme procedimentos e uso básico de EPI.</p>
+                    <p className="text-xs text-slate-600 italic border-t border-green-200 pt-3"><span className="font-semibold">Versão resumida:</span> Condição segura</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Risco Médio */}
-            <Card className="border-l-4 border-l-yellow-600 bg-gradient-to-br from-yellow-50 to-yellow-100/50 hover:shadow-xl transition-all duration-300">
+            <Card className="border-l-4 border-l-yellow-500 bg-gradient-to-br from-yellow-50 to-white hover:shadow-lg transition-all duration-300">
               <CardContent className="p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <Target className="h-8 w-8 text-yellow-600" />
-                  <h3 className="text-2xl font-bold text-yellow-700">Risco Médio</h3>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <p className="font-semibold text-slate-800 text-sm">POR QUE É MÉDIO:</p>
-                    <p className="text-slate-700 text-sm leading-relaxed mt-2">Pode causar desconforto ou lesões leves. Deve ser monitorado e corrigido conforme cronograma.</p>
-                  </div>
-                  <div className="pt-3 border-t border-yellow-200">
-                    <p className="font-semibold text-slate-800 text-sm mb-2">Critérios:</p>
-                    <ul className="text-slate-700 text-sm space-y-1">
-                      <li>• Probabilidade média + Consequências leves/moderadas</li>
-                      <li>• Iluminação inadequada</li>
-                      <li>• Ruído acima do permitido</li>
-                    </ul>
+                <div className="flex items-start gap-4">
+                  <div className="text-5xl">🟡</div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-yellow-700 mb-3">Risco Médio</h3>
+                    <p className="text-slate-700 mb-3"><span className="font-semibold">Condição de atenção.</span> Perigos presentes com potencial de causar acidentes leves ou moderados. Exige reforço de medidas preventivas, orientação e uso adequado de EPI.</p>
+                    <p className="text-xs text-slate-600 italic border-t border-yellow-200 pt-3"><span className="font-semibold">Versão resumida:</span> Atenção / Risco controlável</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Risco Baixo */}
-            <Card className="border-l-4 border-l-green-600 bg-gradient-to-br from-green-50 to-green-100/50 hover:shadow-xl transition-all duration-300">
+            {/* Risco Alto */}
+            <Card className="border-l-4 border-l-orange-600 bg-gradient-to-br from-orange-50 to-white hover:shadow-lg transition-all duration-300">
               <CardContent className="p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <CheckCircle2 className="h-8 w-8 text-green-600" />
-                  <h3 className="text-2xl font-bold text-green-700">Risco Baixo</h3>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <p className="font-semibold text-slate-800 text-sm">POR QUE É BAIXO:</p>
-                    <p className="text-slate-700 text-sm leading-relaxed mt-2">Risco mínimo de causar danos. Requer apenas monitoramento periódico e manutenção preventiva.</p>
-                  </div>
-                  <div className="pt-3 border-t border-green-200">
-                    <p className="font-semibold text-slate-800 text-sm mb-2">Critérios:</p>
-                    <ul className="text-slate-700 text-sm space-y-1">
-                      <li>• Probabilidade baixa + Consequências mínimas</li>
-                      <li>• Sinalização desgastada</li>
-                      <li>• Manutenção preventiva de equipamentos</li>
-                    </ul>
+                <div className="flex items-start gap-4">
+                  <div className="text-5xl">🟠</div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-orange-700 mb-3">Risco Alto</h3>
+                    <p className="text-slate-700 mb-3"><span className="font-semibold">Condição perigosa.</span> Elevada probabilidade de acidente grave ou doença ocupacional. Necessária adoção imediata de medidas de controle, supervisão constante e, se aplicável, revisão do método de trabalho.</p>
+                    <p className="text-xs text-slate-600 italic border-t border-orange-200 pt-3"><span className="font-semibold">Versão resumida:</span> Perigo significativo</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Risco Crítico */}
+            <Card className="border-l-4 border-l-red-600 bg-gradient-to-br from-red-50 to-white hover:shadow-lg transition-all duration-300">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-4">
+                  <div className="text-5xl">🔴</div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-red-700 mb-3">Risco Crítico</h3>
+                    <p className="text-slate-700 mb-3"><span className="font-semibold">Condição extremamente perigosa.</span> Risco iminente à vida ou à integridade física. Atividade deve ser interrompida imediatamente até a eliminação ou controle do risco.</p>
+                    <p className="text-xs text-slate-600 italic border-t border-red-200 pt-3"><span className="font-semibold">Versão resumida:</span> Interdição imediata</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Nota sobre versão resumida */}
+          <div className="p-6 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-slate-700"><span className="font-semibold text-blue-700">📋 Versão Resumida:</span> As versões resumidas acima são utilizadas em mapas de risco e sinalização para comunicação rápida e clara do nível de risco em cada área.</p>
           </div>
         </section>
 
