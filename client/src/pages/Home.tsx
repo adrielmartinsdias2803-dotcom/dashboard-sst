@@ -10,10 +10,38 @@ import {
   ExternalLink,
   Users,
   Calendar,
-  CheckCheck
+  CheckCheck,
+  Loader2
 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import { useEffect, useState } from "react";
+
+interface SSTMetrics {
+  totalRiscos: number;
+  riscosAltos: number;
+  riscosMedias: number;
+  riscosCriticos: number;
+  acoesConcluidas: number;
+}
 
 export default function Home() {
+  const [metrics, setMetrics] = useState<SSTMetrics>({
+    totalRiscos: 737,
+    riscosAltos: 276,
+    riscosMedias: 251,
+    riscosCriticos: 2,
+    acoesConcluidas: 290,
+  });
+  const [loading, setLoading] = useState(false);
+
+  // TODO: Integrar com API tRPC quando a rota estiver pronta
+  // const { data: metricsData, isLoading } = trpc.sst.getMetrics.useQuery();
+  // useEffect(() => {
+  //   if (metricsData) {
+  //     setMetrics(metricsData);
+  //   }
+  // }, [metricsData]);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header com Logo */}
@@ -59,7 +87,7 @@ export default function Home() {
             <CardContent className="pt-6">
               <p className="text-lg text-foreground leading-relaxed mb-4">
                 A análise da planilha de Gestão SST revelou um panorama crítico que demanda ação imediata. 
-                Foram identificados <span className="font-bold text-primary">737 registros</span> de condições de risco 
+                Foram identificados <span className="font-bold text-primary">{metrics.totalRiscos} registros</span> de condições de risco 
                 e acidentes, com uma concentração preocupante de <span className="font-bold text-destructive">71,5%</span> 
                 classificados como Alto ou Médio risco.
               </p>
@@ -82,7 +110,7 @@ export default function Home() {
                 <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Total de Riscos</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-display font-bold text-destructive">737</div>
+                <div className="text-4xl font-display font-bold text-destructive">{metrics.totalRiscos}</div>
                 <p className="text-xs text-muted-foreground mt-2">Condições identificadas</p>
               </CardContent>
             </Card>
@@ -92,7 +120,7 @@ export default function Home() {
                 <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Riscos Altos</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-display font-bold text-destructive">276</div>
+                <div className="text-4xl font-display font-bold text-destructive">{metrics.riscosAltos}</div>
                 <p className="text-xs text-muted-foreground mt-2">37,4% do total</p>
               </CardContent>
             </Card>
@@ -102,7 +130,7 @@ export default function Home() {
                 <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Riscos Médios</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-display font-bold text-secondary">251</div>
+                <div className="text-4xl font-display font-bold text-secondary">{metrics.riscosMedias}</div>
                 <p className="text-xs text-muted-foreground mt-2">34,1% do total</p>
               </CardContent>
             </Card>
@@ -112,7 +140,7 @@ export default function Home() {
                 <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Riscos Críticos</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-display font-bold text-red-900">2</div>
+                <div className="text-4xl font-display font-bold text-red-900">{metrics.riscosCriticos}</div>
                 <p className="text-xs text-muted-foreground mt-2">0,3% do total</p>
               </CardContent>
             </Card>
@@ -122,7 +150,7 @@ export default function Home() {
                 <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Ações Concluídas</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-display font-bold text-emerald-600">290</div>
+                <div className="text-4xl font-display font-bold text-emerald-600">{metrics.acoesConcluidas}</div>
                 <p className="text-xs text-muted-foreground mt-2">39,3% de resolução</p>
               </CardContent>
             </Card>
@@ -471,7 +499,7 @@ export default function Home() {
             <CardContent className="space-y-4">
               <p className="text-lg text-foreground leading-relaxed">
                 O sistema de gestão SST da Mococa demonstra maturidade na identificação de riscos, porém enfrenta 
-                desafios operacionais significativos. Com 737 registros documentados e 71,5% classificados como Alto ou Médio, 
+                desafios operacionais significativos. Com {metrics.totalRiscos} registros documentados e 71,5% classificados como Alto ou Médio, 
                 a situação demanda ação estratégica imediata.
               </p>
               <p className="text-lg text-foreground leading-relaxed">
