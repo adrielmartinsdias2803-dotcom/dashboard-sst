@@ -62,6 +62,13 @@ export default function Home() {
     await forceSyncMutation.mutateAsync();
   };
 
+  const handleDashboardAccess = () => {
+    const dashboardSection = document.getElementById('dashboard-section');
+    if (dashboardSection) {
+      dashboardSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50">
       {/* Header Premium */}
@@ -103,7 +110,14 @@ export default function Home() {
             <p className="text-slate-600 text-sm mt-1">Acesse ferramentas essenciais de gestão</p>
           </div>
           <div className="p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Button
+                onClick={handleDashboardAccess}
+                className="gap-3 h-14 text-base font-semibold bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-700/90 hover:to-slate-800/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
+              >
+                <BarChart3 className="h-5 w-5" />
+                Dashboard
+              </Button>
               <Button 
                 onClick={handleForceSync}
                 disabled={isSyncing}
@@ -234,7 +248,7 @@ export default function Home() {
         </section>
 
         {/* Classificação de Riscos - Seção Educativa Bacana */}
-        <section className="mb-16">
+        <section id="dashboard-section" className="mb-16 scroll-mt-20">
           <div className="flex items-center gap-3 mb-8">
             <BarChart3 className="h-8 w-8 text-primary" />
             <h2 className="text-4xl font-display font-bold text-primary">Entenda as Classificações de Risco</h2>
