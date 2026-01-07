@@ -8,17 +8,18 @@ import {
   Target,
   Zap,
   Shield,
-  ExternalLink,
   Users,
   Calendar,
   CheckCheck,
   Loader2,
   RefreshCw,
   ArrowRight,
-  Flame
+  Flame,
+  BarChart3,
+  Info
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface SSTMetrics {
@@ -26,6 +27,7 @@ interface SSTMetrics {
   riscosAltos: number;
   riscosMedias: number;
   riscosCriticos: number;
+  riscossBaixos: number;
   acoesConcluidas: number;
 }
 
@@ -35,9 +37,9 @@ export default function Home() {
     riscosAltos: 276,
     riscosMedias: 251,
     riscosCriticos: 3,
+    riscossBaixos: 207,
     acoesConcluidas: 290,
   });
-  const [loading, setLoading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
   const forceSyncMutation = trpc.sst.forceSyncNow.useMutation({
@@ -58,17 +60,6 @@ export default function Home() {
   const handleForceSync = async () => {
     setIsSyncing(true);
     await forceSyncMutation.mutateAsync();
-  };
-
-  const handlePowerBIAccess = () => {
-    const powerbiUrl = "https://app.powerbi.com/groups/me/reports/5a087ca6-f606-4cb2-af76-6a3ca94a08c2/868e18c05a0d8320c33c?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&experience=power-bi";
-    try {
-      window.open(powerbiUrl, "_blank");
-      toast.success("Abrindo Dashboard PowerBI...");
-    } catch (error) {
-      toast.error("Não foi possível abrir o link. Tente copiar e colar manualmente no navegador.");
-      navigator.clipboard.writeText(powerbiUrl);
-    }
   };
 
   return (
@@ -112,7 +103,7 @@ export default function Home() {
             <p className="text-slate-600 text-sm mt-1">Acesse ferramentas essenciais de gestão</p>
           </div>
           <div className="p-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Button 
                 onClick={handleForceSync}
                 disabled={isSyncing}
@@ -130,16 +121,6 @@ export default function Home() {
                   </>
                 )}
               </Button>
-              <button
-                onClick={handlePowerBIAccess}
-                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-primary to-blue-700 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:from-primary/90 hover:to-blue-700/90 cursor-pointer"
-                title="Abrir Dashboard PowerBI em nova aba"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
-                </svg>
-                Dashboard PowerBI
-              </button>
               <a 
                 href="https://mococa.sharepoint.com/:x:/s/msteams_6115f4_553804/IQAC1WtO39XDR6XhDrcEMBqNAaEW-EuEv7JV7Io_fYzQaxs?email=sandy.nascimento%40mococa.com.br&e=BlyQSz"
                 target="_blank"
@@ -247,6 +228,128 @@ export default function Home() {
                 <p className="text-slate-600 text-sm font-medium mb-2">Ações Concluídas</p>
                 <p className="text-4xl font-display font-bold text-green-600">{metrics.acoesConcluidas}</p>
                 <p className="text-xs text-slate-500 mt-3">Taxa: {((metrics.acoesConcluidas / (metrics.acoesConcluidas + 390)) * 100).toFixed(1)}%</p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Classificação de Riscos - Seção Educativa Bacana */}
+        <section className="mb-16">
+          <div className="flex items-center gap-3 mb-8">
+            <BarChart3 className="h-8 w-8 text-primary" />
+            <h2 className="text-4xl font-display font-bold text-primary">Entenda as Classificações de Risco</h2>
+          </div>
+
+          <div className="space-y-6">
+            {/* Risco Crítico */}
+            <Card className="border-0 shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-red-50 to-white">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white shadow-lg">
+                      <Flame className="h-8 w-8" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-display font-bold text-red-700 mb-3">🔴 Risco Crítico</h3>
+                    <p className="text-slate-700 font-semibold mb-3">O que é?</p>
+                    <p className="text-slate-600 leading-relaxed mb-4">
+                      Situações extremamente perigosas que podem causar lesões graves, morte ou danos severos ao patrimônio. Requerem ação imediata e intervenção urgente. Não podem ser ignoradas sob nenhuma circunstância.
+                    </p>
+                    <div className="bg-red-100 border-l-4 border-red-600 p-4 rounded">
+                      <p className="text-sm font-semibold text-red-900 mb-2">📋 Exemplos:</p>
+                      <ul className="text-sm text-red-800 space-y-1">
+                        <li>• Equipamentos sem proteção de segurança funcionando</li>
+                        <li>• Exposição a substâncias tóxicas sem proteção</li>
+                        <li>• Estruturas instáveis ou em risco de colapso</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Risco Alto */}
+            <Card className="border-0 shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-orange-50 to-white">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg">
+                      <AlertTriangle className="h-8 w-8" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-display font-bold text-orange-700 mb-3">🟠 Risco Alto</h3>
+                    <p className="text-slate-700 font-semibold mb-3">O que é?</p>
+                    <p className="text-slate-600 leading-relaxed mb-4">
+                      Condições perigosas que podem resultar em lesões significativas ou doenças ocupacionais. Precisam de planos de ação e controles robustos para minimizar a probabilidade de ocorrência. Devem ser priorizadas.
+                    </p>
+                    <div className="bg-orange-100 border-l-4 border-orange-600 p-4 rounded">
+                      <p className="text-sm font-semibold text-orange-900 mb-2">📋 Exemplos:</p>
+                      <ul className="text-sm text-orange-800 space-y-1">
+                        <li>• Trabalho em altura sem sistema de proteção adequado</li>
+                        <li>• Máquinas com manutenção deficiente</li>
+                        <li>• Ambientes com ruído excessivo sem proteção auditiva</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Risco Médio */}
+            <Card className="border-0 shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-yellow-50 to-white">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 text-white shadow-lg">
+                      <Target className="h-8 w-8" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-display font-bold text-yellow-700 mb-3">🟡 Risco Médio</h3>
+                    <p className="text-slate-700 font-semibold mb-3">O que é?</p>
+                    <p className="text-slate-600 leading-relaxed mb-4">
+                      Situações que podem causar lesões moderadas ou desconforto aos colaboradores. Requerem medidas de controle e monitoramento contínuo. Devem ser gerenciadas com atenção, mas com menos urgência que os riscos altos.
+                    </p>
+                    <div className="bg-yellow-100 border-l-4 border-yellow-600 p-4 rounded">
+                      <p className="text-sm font-semibold text-yellow-900 mb-2">📋 Exemplos:</p>
+                      <ul className="text-sm text-yellow-800 space-y-1">
+                        <li>• Postura inadequada durante trabalho prolongado</li>
+                        <li>• Falta de iluminação adequada em áreas de trabalho</li>
+                        <li>• Superfícies escorregadias ou obstruídas</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Risco Baixo */}
+            <Card className="border-0 shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-green-50 to-white">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg">
+                      <CheckCircle2 className="h-8 w-8" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-display font-bold text-green-700 mb-3">🟢 Risco Baixo</h3>
+                    <p className="text-slate-700 font-semibold mb-3">O que é?</p>
+                    <p className="text-slate-600 leading-relaxed mb-4">
+                      Situações com probabilidade mínima de causar danos. Embora controláveis, ainda requerem atenção e medidas preventivas básicas. Devem ser mantidas sob observação para evitar escalação.
+                    </p>
+                    <div className="bg-green-100 border-l-4 border-green-600 p-4 rounded">
+                      <p className="text-sm font-semibold text-green-900 mb-2">📋 Exemplos:</p>
+                      <ul className="text-sm text-green-800 space-y-1">
+                        <li>• Pequenos cortes ou hematomas ocasionais</li>
+                        <li>• Desordem menor no ambiente de trabalho</li>
+                        <li>• Falta de sinalização em áreas de baixo risco</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
