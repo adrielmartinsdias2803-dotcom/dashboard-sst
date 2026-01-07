@@ -372,49 +372,127 @@ export default function Home() {
 
           <Card className="border-0 shadow-xl bg-white overflow-hidden">
             <CardContent className="p-8">
-              <div className="space-y-6">
+              {/* Fluxograma Horizontal (Desktop) */}
+              <div className="hidden md:block">
+                <div className="flex items-stretch justify-between gap-3">
+                  {[
+                    {
+                      step: 1,
+                      title: "Cadastro",
+                      icon: "📋",
+                      participants: ["Técnico SST", "Manutenção", "Produção"],
+                      color: "blue"
+                    },
+                    {
+                      step: 2,
+                      title: "Convite",
+                      icon: "👥",
+                      participants: ["PCP", "Qualidade", "Almoxerifado", "Melhoria Contínua", "Diretoria", "Facilities", "Meio Ambiente", "P&D"],
+                      color: "purple"
+                    },
+                    {
+                      step: 3,
+                      title: "Agendamento",
+                      icon: "📅",
+                      participants: ["Prazo: 45 dias", "(1 mês e meio)"],
+                      color: "yellow"
+                    },
+                    {
+                      step: 4,
+                      title: "Execução",
+                      icon: "✅",
+                      participants: ["Inspeção", "Coleta de dados", "Documentação"],
+                      color: "green"
+                    }
+                  ].map((phase, idx) => (
+                    <div key={idx} className="flex-1 flex flex-col items-center">
+                      {/* Card */}
+                      <div className={`w-full bg-${phase.color}-50 rounded-2xl p-6 border-2 border-${phase.color}-200 hover:border-${phase.color}-400 transition-all duration-300 shadow-lg hover:shadow-xl`}>
+                        {/* Ícone e Número */}
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                          <div className={`bg-gradient-to-br from-${phase.color}-500 to-${phase.color}-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shadow-lg`}>
+                            {phase.step}
+                          </div>
+                          <div className="text-3xl">{phase.icon}</div>
+                        </div>
+                        
+                        {/* Título */}
+                        <h3 className="text-base font-bold text-slate-900 text-center mb-3">{phase.title}</h3>
+                        
+                        {/* Participantes */}
+                        <div className="space-y-1">
+                          {phase.participants.map((participant, pidx) => (
+                            <div key={pidx} className="flex items-center gap-2 text-xs text-slate-700">
+                              <div className={`w-2 h-2 rounded-full bg-${phase.color}-500`}></div>
+                              <span className="font-medium text-center w-full">{participant}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      {/* Seta */}
+                      {idx < 3 && (
+                        <div className="text-3xl text-primary my-4 animate-bounce">→</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Fluxograma Vertical (Mobile) */}
+              <div className="md:hidden space-y-4">
                 {[
                   {
                     step: 1,
                     title: "Cadastro da Rota",
-                    participants: ["Técnico de Segurança", "Alguém da Manutenção", "Alguém da Produção"],
-                    color: "bg-blue-100 text-blue-700"
+                    icon: "📋",
+                    participants: ["Técnico SST", "Manutenção", "Produção"],
+                    color: "blue"
                   },
                   {
                     step: 2,
                     title: "Convite de Participantes",
-                    participants: ["PCP", "Qualidade", "Almoxerifado", "Melhoria Contínua", "Diretoria", "Facilities", "Meio Ambiente", "Pesquisa e Desenvolvimento"],
-                    color: "bg-purple-100 text-purple-700"
+                    icon: "👥",
+                    participants: ["PCP", "Qualidade", "Almoxerifado", "Melhoria Contínua", "Diretoria", "Facilities", "Meio Ambiente", "P&D"],
+                    color: "purple"
                   },
                   {
                     step: 3,
                     title: "Agendamento",
+                    icon: "📅",
                     participants: ["Prazo: 45 dias (1 mês e meio)"],
-                    color: "bg-yellow-100 text-yellow-700"
+                    color: "yellow"
                   },
                   {
                     step: 4,
-                    title: "Execução da Rota",
-                    participants: ["Inspeção de segurança", "Coleta de dados", "Documentação"],
-                    color: "bg-green-100 text-green-700"
+                    title: "Execução",
+                    icon: "✅",
+                    participants: ["Inspeção", "Coleta de dados", "Documentação"],
+                    color: "green"
                   }
                 ].map((phase, idx) => (
-                  <div key={idx} className="flex gap-6 items-start">
-                    <div className={`flex-shrink-0 w-12 h-12 rounded-full ${phase.color} flex items-center justify-center font-bold text-lg`}>
-                      {phase.step}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-slate-900 mb-3">{phase.title}</h3>
-                      <div className="flex flex-wrap gap-2">
+                  <div key={idx}>
+                    <div className={`bg-${phase.color}-50 rounded-xl p-4 border-2 border-${phase.color}-200 shadow-md`}>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className={`bg-gradient-to-br from-${phase.color}-500 to-${phase.color}-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg`}>
+                          {phase.step}
+                        </div>
+                        <div className="text-2xl">{phase.icon}</div>
+                        <h3 className="text-sm font-bold text-slate-900">{phase.title}</h3>
+                      </div>
+                      <div className="space-y-1 ml-13">
                         {phase.participants.map((participant, pidx) => (
-                          <Badge key={pidx} variant="outline" className="bg-slate-50 text-slate-700 border-slate-200">
-                            {participant}
-                          </Badge>
+                          <div key={pidx} className="flex items-center gap-2 text-xs text-slate-700">
+                            <div className={`w-1.5 h-1.5 rounded-full bg-${phase.color}-500`}></div>
+                            <span>{participant}</span>
+                          </div>
                         ))}
                       </div>
                     </div>
                     {idx < 3 && (
-                      <div className="text-primary text-2xl">↓</div>
+                      <div className="flex justify-center py-2">
+                        <div className="text-2xl text-primary">↓</div>
+                      </div>
                     )}
                   </div>
                 ))}
