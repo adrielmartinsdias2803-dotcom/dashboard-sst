@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { 
   AlertTriangle, 
   CheckCircle2, 
@@ -11,10 +12,12 @@ import {
   Users,
   Calendar,
   CheckCheck,
-  Loader2
+  Loader2,
+  RefreshCw
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface SSTMetrics {
   totalRiscos: number;
@@ -33,6 +36,27 @@ export default function Home() {
     acoesConcluidas: 290,
   });
   const [loading, setLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const forceSyncMutation = trpc.sst.forceSyncNow.useMutation({
+    onSuccess: (data) => {
+      setIsSyncing(false);
+      if (data.success) {
+        toast.success("Sincronização iniciada com sucesso!");
+      } else {
+        toast.error(data.message);
+      }
+    },
+    onError: (error) => {
+      setIsSyncing(false);
+      toast.error("Erro ao sincronizar: " + error.message);
+    },
+  });
+
+  const handleForceSync = async () => {
+    setIsSyncing(true);
+    await forceSyncMutation.mutateAsync();
+  };
 
   // TODO: Integrar com API tRPC quando a rota estiver pronta
   // const { data: metricsData, isLoading } = trpc.sst.getMetrics.useQuery();
@@ -64,8 +88,25 @@ export default function Home() {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 md:px-8 py-12">
         
-        {/* PowerBI Dashboard Link */}
-        <div className="mb-12 flex justify-end">
+        {/* Links de Acesso */}
+        <div className="mb-12 flex justify-end gap-4 flex-wrap">
+          <Button 
+            onClick={handleForceSync}
+            disabled={isSyncing}
+            className="gap-2"
+          >
+            {isSyncing ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Sincronizando...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4" />
+                Forçar Sincronização
+              </>
+            )}
+          </Button>
           <a 
             href="https://app.powerbi.com/links/msbdKkK4g_?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&pbi_source=linkShare&bookmarkGuid=2597a280-9448-40cd-99f5-99b6ab80e143"
             target="_blank"
