@@ -88,36 +88,51 @@ export default function Home() {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 md:px-8 py-12">
         
-        {/* Links de Acesso */}
-        <div className="mb-12 flex justify-end gap-4 flex-wrap">
-          <Button 
-            onClick={handleForceSync}
-            disabled={isSyncing}
-            className="gap-2"
-          >
-            {isSyncing ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Sincronizando...
-              </>
-            ) : (
-              <>
-                <RefreshCw className="h-4 w-4" />
-                Sincronização
-              </>
-            )}
-          </Button>
-          <a 
-            href="https://app.powerbi.com/groups/me/reports/5a087ca6-f606-4cb2-af76-6a3ca94a08c2/868e18c05a0d8320c33c?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&experience=power-bi"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-md"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
-            </svg>
-            Acessar Dashboard PowerBI
-          </a>
+        {/* Links de Acesso - Seção de Ações */}
+        <div className="mb-12 bg-gradient-to-r from-primary/5 to-yellow-50 rounded-xl p-6 border border-primary/10">
+          <h3 className="text-lg font-semibold text-primary mb-4">Ações Rápidas</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button 
+              onClick={handleForceSync}
+              disabled={isSyncing}
+              className="gap-2 h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-white shadow-md"
+            >
+              {isSyncing ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Sincronizando...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="h-5 w-5" />
+                  Sincronização
+                </>
+              )}
+            </Button>
+            <a 
+              href="https://app.powerbi.com/groups/me/reports/5a087ca6-f606-4cb2-af76-6a3ca94a08c2/868e18c05a0d8320c33c?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&experience=power-bi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-md h-12 text-base"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
+              </svg>
+              Dashboard PowerBI
+            </a>
+            <a 
+              href="https://mococa.sharepoint.com/:x:/s/msteams_6115f4_553804/IQAC1WtO39XDR6XhDrcEMBqNAaEW-EuEv7JV7Io_fYzQaxs?email=sandy.nascimento%40mococa.com.br&e=BlyQSz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-yellow-500 text-white rounded-lg font-semibold hover:bg-yellow-600 transition-colors shadow-md h-12 text-base"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+              Planilha SST
+            </a>
+          </div>
         </div>
 
         {/* Executive Summary */}
