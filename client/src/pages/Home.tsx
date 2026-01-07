@@ -363,79 +363,109 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Fluxograma de Rotas */}
+        {/* Fluxograma de Rotas - Versão Premium */}
         <section className="mb-16">
           <div className="flex items-center gap-3 mb-8">
             <Calendar className="h-8 w-8 text-primary" />
             <h2 className="text-4xl font-display font-bold text-primary">Realização de Rotas de Segurança</h2>
           </div>
 
-          <Card className="border-0 shadow-xl bg-white overflow-hidden">
+          <Card className="border-0 shadow-2xl bg-gradient-to-br from-white via-slate-50 to-white overflow-hidden">
             <CardContent className="p-8">
               {/* Fluxograma Horizontal (Desktop) */}
               <div className="hidden md:block">
-                <div className="flex items-stretch justify-between gap-3">
-                  {[
-                    {
-                      step: 1,
-                      title: "Cadastro",
-                      icon: "📋",
-                      participants: ["Técnico SST", "Manutenção", "Produção"],
-                      color: "blue"
-                    },
-                    {
-                      step: 2,
-                      title: "Convite",
-                      icon: "👥",
-                      participants: ["PCP", "Qualidade", "Almoxerifado", "Melhoria Contínua", "Diretoria", "Facilities", "Meio Ambiente", "P&D"],
-                      color: "purple"
-                    },
-                    {
-                      step: 3,
-                      title: "Agendamento",
-                      icon: "📅",
-                      participants: ["Prazo: 45 dias", "(1 mês e meio)"],
-                      color: "yellow"
-                    },
-                    {
-                      step: 4,
-                      title: "Execução",
-                      icon: "✅",
-                      participants: ["Inspeção", "Coleta de dados", "Documentação"],
-                      color: "green"
-                    }
-                  ].map((phase, idx) => (
-                    <div key={idx} className="flex-1 flex flex-col items-center">
-                      {/* Card */}
-                      <div className={`w-full bg-${phase.color}-50 rounded-2xl p-6 border-2 border-${phase.color}-200 hover:border-${phase.color}-400 transition-all duration-300 shadow-lg hover:shadow-xl`}>
-                        {/* Ícone e Número */}
-                        <div className="flex items-center justify-center gap-2 mb-4">
-                          <div className={`bg-gradient-to-br from-${phase.color}-500 to-${phase.color}-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shadow-lg`}>
-                            {phase.step}
-                          </div>
-                          <div className="text-3xl">{phase.icon}</div>
-                        </div>
-                        
-                        {/* Título */}
-                        <h3 className="text-base font-bold text-slate-900 text-center mb-3">{phase.title}</h3>
-                        
-                        {/* Participantes */}
-                        <div className="space-y-1">
-                          {phase.participants.map((participant, pidx) => (
-                            <div key={pidx} className="flex items-center gap-2 text-xs text-slate-700">
-                              <div className={`w-2 h-2 rounded-full bg-${phase.color}-500`}></div>
-                              <span className="font-medium text-center w-full">{participant}</span>
+                <div className="relative py-8">
+                  {/* Linha conectora de fundo */}
+                  <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-purple-400 via-yellow-400 to-green-400 opacity-20 rounded-full transform -translate-y-1/2"></div>
+                  
+                  <div className="flex items-center justify-between gap-4 relative z-10">
+                    {[
+                      {
+                        step: 1,
+                        title: "Cadastro da Rota",
+                        subtitle: "Iniciar novo processo",
+                        icon: "📋",
+                        participants: ["Técnico SST", "Manutenção", "Produção"],
+                        color: "blue",
+                        gradient: "from-blue-500 to-blue-600"
+                      },
+                      {
+                        step: 2,
+                        title: "Convite de Participantes",
+                        subtitle: "Engajar stakeholders",
+                        icon: "👥",
+                        participants: ["PCP", "Qualidade", "Almoxerifado", "Melhoria Contínua", "Diretoria", "Facilities", "Meio Ambiente", "P&D"],
+                        color: "purple",
+                        gradient: "from-purple-500 to-purple-600"
+                      },
+                      {
+                        step: 3,
+                        title: "Agendamento",
+                        subtitle: "Definir cronograma",
+                        icon: "📅",
+                        participants: ["Prazo: 45 dias", "(1 mês e meio)"],
+                        color: "yellow",
+                        gradient: "from-yellow-500 to-yellow-600"
+                      },
+                      {
+                        step: 4,
+                        title: "Execução",
+                        subtitle: "Realizar inspeção",
+                        icon: "✅",
+                        participants: ["Inspeção", "Coleta de dados", "Documentação"],
+                        color: "green",
+                        gradient: "from-green-500 to-green-600"
+                      }
+                    ].map((phase, idx) => (
+                      <div key={idx} className="flex-1 flex flex-col items-center group">
+                        {/* Card com efeito 3D premium */}
+                        <div className="w-full relative mb-4">
+                          {/* Glow effect */}
+                          <div className="absolute -inset-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-3xl blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                          
+                          {/* Card principal */}
+                          <div className="relative bg-white rounded-3xl p-8 border-2 border-slate-100 hover:border-slate-300 transition-all duration-500 shadow-xl hover:shadow-2xl hover:-translate-y-3 hover:scale-105">
+                            {/* Número com efeito de pulso */}
+                            <div className="flex justify-center mb-6">
+                              <div className={`relative w-16 h-16 rounded-full bg-gradient-to-br ${phase.gradient} text-white flex items-center justify-center font-bold text-2xl shadow-lg`}>
+                                <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                                {phase.step}
+                              </div>
                             </div>
-                          ))}
+                            
+                            {/* Ícone com animação */}
+                            <div className="text-6xl text-center mb-4 group-hover:scale-125 transition-transform duration-300 origin-center">{phase.icon}</div>
+                            
+                            {/* Título */}
+                            <h3 className="text-lg font-bold text-slate-900 text-center mb-1">{phase.title}</h3>
+                            
+                            {/* Subtítulo */}
+                            <p className="text-xs text-slate-500 text-center mb-4 italic">{phase.subtitle}</p>
+                            
+                            {/* Divisor decorativo */}
+                            <div className="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent mb-4"></div>
+                            
+                            {/* Participantes */}
+                            <div className="space-y-2">
+                              {phase.participants.map((participant, pidx) => (
+                                <div key={pidx} className="flex items-center gap-2 text-xs text-slate-700 hover:text-slate-900 transition-colors">
+                                  <div className={`w-2 h-2 rounded-full bg-gradient-to-r from-${phase.color}-400 to-${phase.color}-600 group-hover:scale-150 transition-transform`}></div>
+                                  <span className="font-medium">{participant}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         </div>
+                        
+                        {/* Seta conectora com animação */}
+                        {idx < 3 && (
+                          <div className="flex justify-center py-2">
+                            <div className="text-4xl text-primary animate-pulse">→</div>
+                          </div>
+                        )}
                       </div>
-                      
-                      {/* Seta */}
-                      {idx < 3 && (
-                        <div className="text-3xl text-primary my-4 animate-bounce">→</div>
-                      )}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -447,43 +477,47 @@ export default function Home() {
                     title: "Cadastro da Rota",
                     icon: "📋",
                     participants: ["Técnico SST", "Manutenção", "Produção"],
-                    color: "blue"
+                    color: "blue",
+                    gradient: "from-blue-500 to-blue-600"
                   },
                   {
                     step: 2,
                     title: "Convite de Participantes",
                     icon: "👥",
                     participants: ["PCP", "Qualidade", "Almoxerifado", "Melhoria Contínua", "Diretoria", "Facilities", "Meio Ambiente", "P&D"],
-                    color: "purple"
+                    color: "purple",
+                    gradient: "from-purple-500 to-purple-600"
                   },
                   {
                     step: 3,
                     title: "Agendamento",
                     icon: "📅",
                     participants: ["Prazo: 45 dias (1 mês e meio)"],
-                    color: "yellow"
+                    color: "yellow",
+                    gradient: "from-yellow-500 to-yellow-600"
                   },
                   {
                     step: 4,
                     title: "Execução",
                     icon: "✅",
                     participants: ["Inspeção", "Coleta de dados", "Documentação"],
-                    color: "green"
+                    color: "green",
+                    gradient: "from-green-500 to-green-600"
                   }
                 ].map((phase, idx) => (
                   <div key={idx}>
-                    <div className={`bg-${phase.color}-50 rounded-xl p-4 border-2 border-${phase.color}-200 shadow-md`}>
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className={`bg-gradient-to-br from-${phase.color}-500 to-${phase.color}-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg`}>
+                    <div className="bg-white rounded-2xl p-6 border-2 border-slate-100 shadow-lg hover:shadow-xl transition-all">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className={`bg-gradient-to-br ${phase.gradient} text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg`}>
                           {phase.step}
                         </div>
-                        <div className="text-2xl">{phase.icon}</div>
+                        <div className="text-3xl">{phase.icon}</div>
                         <h3 className="text-sm font-bold text-slate-900">{phase.title}</h3>
                       </div>
-                      <div className="space-y-1 ml-13">
+                      <div className="space-y-2 ml-16">
                         {phase.participants.map((participant, pidx) => (
                           <div key={pidx} className="flex items-center gap-2 text-xs text-slate-700">
-                            <div className={`w-1.5 h-1.5 rounded-full bg-${phase.color}-500`}></div>
+                            <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${phase.gradient}`}></div>
                             <span>{participant}</span>
                           </div>
                         ))}
