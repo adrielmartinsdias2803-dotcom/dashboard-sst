@@ -26,7 +26,7 @@ export const appRouter = router({
         totalRiscos: 737,
         riscosAltos: 276,
         riscosMedias: 251,
-        riscosCriticos: 2,
+        riscosCriticos: 3,
         acoesConcluidas: 290,
         acoesPendentes: 390,
         lastSyncedAt: new Date(),
