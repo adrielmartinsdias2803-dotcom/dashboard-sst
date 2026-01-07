@@ -74,13 +74,13 @@ export default function Home() {
           <div className="flex items-center gap-4">
             <img src="/images/mococa-logo.png" alt="Mococa" className="h-16 md:h-20" />
             <div>
-              <h1 className="text-2xl md:text-4xl font-display font-bold">RELATÓRIO SST</h1>
+              <h1 className="text-2xl md:text-4xl font-display font-bold">RELATÓRIO SEGURANÇA DO TRABALHO</h1>
               <p className="text-blue-100 text-sm md:text-base">Gestão de Saúde e Segurança do Trabalho</p>
             </div>
           </div>
           <div className="text-right text-sm md:text-base">
             <p className="text-blue-100">Análise Completa</p>
-            <p className="font-semibold">Jan 2026</p>
+            <p className="font-semibold">Janeiro 2026</p>
           </div>
         </div>
       </header>
@@ -339,7 +339,7 @@ export default function Home() {
                     </div>
                     <div className="flex items-center gap-2 p-3 bg-secondary/10 rounded-lg">
                       <CheckCheck className="h-4 w-4 text-secondary" />
-                      <span className="text-sm font-medium">Convidados (PCP/Qualidade/Almoxerifado)</span>
+                      <span className="text-sm font-medium">Convidados (PCP/Qualidade/Almoxerifado/Melhoria contina/Diretoria/Facilites/Meio Ambiente/Pesquisa e Desenvolvimento.)</span>
                     </div>
                   </div>
                 </CardContent>
