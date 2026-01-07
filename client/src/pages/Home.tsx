@@ -6,7 +6,11 @@ import {
   TrendingUp,
   Target,
   Zap,
-  Shield
+  Shield,
+  ExternalLink,
+  Users,
+  Calendar,
+  CheckCheck
 } from "lucide-react";
 
 export default function Home() {
@@ -32,6 +36,21 @@ export default function Home() {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 md:px-8 py-12">
         
+        {/* PowerBI Dashboard Link */}
+        <div className="mb-12 flex justify-end">
+          <a 
+            href="https://app.powerbi.com/links/msbdKkK4g_?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&pbi_source=linkShare&bookmarkGuid=2597a280-9448-40cd-99f5-99b6ab80e143"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-md"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
+            </svg>
+            Acessar Dashboard PowerBI
+          </a>
+        </div>
+
         {/* Executive Summary */}
         <section className="mb-12">
           <h2 className="text-3xl font-display font-bold text-primary mb-6">Resumo Executivo</h2>
@@ -57,7 +76,7 @@ export default function Home() {
         <section className="mb-12">
           <h2 className="text-3xl font-display font-bold text-primary mb-6">Indicadores Principais</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             <Card className="border-t-4 border-t-destructive hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Total de Riscos</CardTitle>
@@ -85,6 +104,16 @@ export default function Home() {
               <CardContent>
                 <div className="text-4xl font-display font-bold text-secondary">251</div>
                 <p className="text-xs text-muted-foreground mt-2">34,1% do total</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-t-4 border-t-red-900 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Riscos Críticos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-display font-bold text-red-900">2</div>
+                <p className="text-xs text-muted-foreground mt-2">0,3% do total</p>
               </CardContent>
             </Card>
 
@@ -176,6 +205,128 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
+          </div>
+        </section>
+
+        {/* Fluxograma de Rotas */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-display font-bold text-primary mb-6">Fluxograma de Realização de Rotas</h2>
+          <p className="text-foreground mb-8 text-lg">Processo de cadastro e agendamento de inspeções de segurança</p>
+          
+          <div className="space-y-6">
+            {/* Etapa 1 */}
+            <div className="flex gap-6">
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg">1</div>
+                <div className="w-1 h-24 bg-primary/30 mt-2"></div>
+              </div>
+              <Card className="flex-1 border-l-4 border-l-primary">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-primary" />
+                    Cadastro da Rota
+                  </CardTitle>
+                  <CardDescription>Responsável: Técnico de Segurança</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-foreground mb-3">O Técnico de Segurança realiza o cadastro inicial da rota de inspeção, definindo:</p>
+                  <ul className="space-y-2 text-sm text-foreground">
+                    <li className="flex items-center gap-2"><span className="text-primary font-bold">•</span> Setor/área a ser inspecionada</li>
+                    <li className="flex items-center gap-2"><span className="text-primary font-bold">•</span> Objetivos e pontos críticos</li>
+                    <li className="flex items-center gap-2"><span className="text-primary font-bold">•</span> Requisitos de segurança</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Etapa 2 */}
+            <div className="flex gap-6">
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-secondary text-primary flex items-center justify-center font-bold text-lg">2</div>
+                <div className="w-1 h-24 bg-secondary/30 mt-2"></div>
+              </div>
+              <Card className="flex-1 border-l-4 border-l-secondary">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-secondary" />
+                    Convite de Participantes
+                  </CardTitle>
+                  <CardDescription>Técnico de Segurança convida os integrantes</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-foreground mb-4">Participantes obrigatórios da rota:</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-lg">
+                      <CheckCheck className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium">Técnico de Segurança</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-lg">
+                      <CheckCheck className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium">Responsável Manutenção</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-lg">
+                      <CheckCheck className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium">Responsável Produção</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-3 bg-secondary/10 rounded-lg">
+                      <CheckCheck className="h-4 w-4 text-secondary" />
+                      <span className="text-sm font-medium">Convidados (PCP/Qualidade/Almoxerifado)</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Etapa 3 */}
+            <div className="flex gap-6">
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-lg">3</div>
+                <div className="w-1 h-24 bg-emerald-500/30 mt-2"></div>
+              </div>
+              <Card className="flex-1 border-l-4 border-l-emerald-500">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="h-5 w-5 text-emerald-600" />
+                    Agendamento
+                  </CardTitle>
+                  <CardDescription>Prazo: 1 mês e meio para confirmação</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-foreground mb-3">Processo de agendamento:</p>
+                  <ul className="space-y-2 text-sm text-foreground">
+                    <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">•</span> Convite enviado aos participantes</li>
+                    <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">•</span> Prazo de 45 dias para confirmação de presença</li>
+                    <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">•</span> Definição de data e horário consensual</li>
+                    <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">•</span> Confirmação final com todos os participantes</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Etapa 4 */}
+            <div className="flex gap-6">
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg">4</div>
+              </div>
+              <Card className="flex-1 border-l-4 border-l-blue-500">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                    Execução da Rota
+                  </CardTitle>
+                  <CardDescription>Realização da inspeção de segurança</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-foreground mb-3">Durante a rota:</p>
+                  <ul className="space-y-2 text-sm text-foreground">
+                    <li className="flex items-center gap-2"><span className="text-blue-600 font-bold">•</span> Inspeção colaborativa do setor</li>
+                    <li className="flex items-center gap-2"><span className="text-blue-600 font-bold">•</span> Identificação de riscos e oportunidades</li>
+                    <li className="flex items-center gap-2"><span className="text-blue-600 font-bold">•</span> Documentação de achados</li>
+                    <li className="flex items-center gap-2"><span className="text-blue-600 font-bold">•</span> Definição de planos de ação</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </section>
 
