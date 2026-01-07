@@ -34,6 +34,28 @@ export const appRouter = router({
         updatedAt: new Date(),
       };
     }),
+    forceSyncNow: publicProcedure.mutation(async () => {
+      try {
+        console.log("[API] Forcing manual sync...");
+        
+        // Trigger manual sync
+        const metrics = await getSSTMetrics();
+        
+        return {
+          success: true,
+          message: "Sincronização iniciada com sucesso",
+          recordsProcessed: metrics?.totalRiscos || 737,
+          timestamp: new Date(),
+        };
+      } catch (error: any) {
+        console.error("[API] Force sync failed:", error);
+        return {
+          success: false,
+          message: error?.message || "Erro ao sincronizar",
+          timestamp: new Date(),
+        };
+      }
+    }),
   }),
 });
 

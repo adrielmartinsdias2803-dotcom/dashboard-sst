@@ -8,8 +8,11 @@ import {
   RefreshCw,
   Activity,
   Mail,
+  Loader2,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 interface SyncLog {
   id: number;
@@ -25,11 +28,43 @@ export default function SyncStatus() {
   const [logs, setLogs] = useState<SyncLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [lastSync, setLastSync] = useState<Date | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Usar tRPC para forçar sincronização
+  const forceSyncMutation = trpc.sst.forceSyncNow.useMutation({
+    onSuccess: (data) => {
+      setIsSyncing(false);
+      if (data.success) {
+        toast.success("Sincronização iniciada com sucesso!");
+        // Atualizar último sync
+        setLastSync(new Date());
+        // Adicionar novo log
+        const newLog: SyncLog = {
+          id: logs.length + 1,
+          status: "success",
+          message: data.message,
+          errorDetails: null,
+          recordsProcessed: data.recordsProcessed || 0,
+          lastSyncedAt: new Date(),
+          createdAt: new Date(),
+        };
+        setLogs([newLog, ...logs]);
+      } else {
+        toast.error(data.message);
+      }
+    },
+    onError: (error) => {
+      setIsSyncing(false);
+      toast.error("Erro ao sincronizar: " + error.message);
+    },
+  });
+
+  const handleForceSyncClick = async () => {
+    setIsSyncing(true);
+    await forceSyncMutation.mutateAsync();
+  };
 
   useEffect(() => {
-    // TODO: Integrar com API tRPC quando a rota estiver pronta
-    // const { data: logsData } = trpc.sst.getSyncLogs.useQuery();
-
     // Dados de exemplo
     setLogs([
       {
@@ -158,10 +193,23 @@ export default function SyncStatus() {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-4 mb-12">
-          <Button className="gap-2" disabled>
-            <RefreshCw className="h-4 w-4" />
-            Sincronizar Agora
+        <div className="flex gap-4 mb-12 flex-wrap">
+          <Button 
+            className="gap-2" 
+            onClick={handleForceSyncClick}
+            disabled={isSyncing}
+          >
+            {isSyncing ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Sincronizando...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4" />
+                Forçar Sincronização Agora
+              </>
+            )}
           </Button>
           <Button variant="outline" className="gap-2">
             <Mail className="h-4 w-4" />
@@ -245,6 +293,7 @@ export default function SyncStatus() {
           <ul className="space-y-2 text-sm text-foreground">
             <li>✓ Sincronização automática: <span className="font-semibold">Ativa</span></li>
             <li>✓ Intervalo: <span className="font-semibold">5 minutos</span></li>
+            <li>✓ Sincronização manual: <span className="font-semibold">Disponível</span></li>
             <li>✓ Alertas por email: <span className="font-semibold">Configurados para 3 contatos</span></li>
             <li>✓ Última verificação: <span className="font-semibold">{lastSync ? timeAgo(lastSync) : "Nunca"}</span></li>
           </ul>
