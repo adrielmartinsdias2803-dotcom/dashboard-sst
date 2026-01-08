@@ -4,6 +4,7 @@
  * Script de Teste Manual - Envio para SharePoint
  * 
  * Este script testa o envio real de dados para a aba "Aderência" no SharePoint
+ * Caminho da planilha: /sites/msteams_6115f4_553804/Shared Documents/General/SEGURANÇA DO TRABALHO - GERAL/ROTAS/Gestão SST_Condições de Riscos.xlsm
  * 
  * Uso:
  *   node test-sharepoint-envio.mjs
@@ -24,6 +25,8 @@ console.log(`  Tenant ID: ${config.tenantId ? "✅ Configurado" : "❌ Não conf
 console.log(`  Client ID: ${config.clientId ? "✅ Configurado" : "❌ Não configurado"}`);
 console.log(`  Client Secret: ${config.clientSecret ? "✅ Configurado" : "❌ Não configurado"}`);
 console.log(`  Site Name: ${config.siteName || "❌ Não configurado"}`);
+console.log(`\n📁 Caminho da planilha:`);
+console.log(`  /sites/${config.siteName}/Shared Documents/General/SEGURANÇA DO TRABALHO - GERAL/ROTAS/Gestão SST_Condições de Riscos.xlsm`);
 
 if (!config.tenantId || !config.clientId || !config.clientSecret || !config.siteName) {
   console.log("\n❌ Credenciais não configuradas. Configure as variáveis de ambiente:");
@@ -85,13 +88,13 @@ async function obterSiteId(token) {
 }
 
 /**
- * Listar listas do site
+ * Obter Drive ID
  */
-async function listarListas(token, siteId) {
-  console.log("\n📋 Listando listas do site...");
+async function obterDriveId(token, siteId) {
+  console.log("\n🔍 Buscando Drive ID...");
   try {
     const response = await axios.get(
-      `https://graph.microsoft.com/v1.0/sites/${siteId}/lists`,
+      `https://graph.microsoft.com/v1.0/sites/${siteId}/drives`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -101,66 +104,151 @@ async function listarListas(token, siteId) {
       }
     );
 
-    console.log(`✅ ${response.data.value.length} listas encontradas:`);
-    response.data.value.forEach((lista) => {
-      console.log(`  - ${lista.displayName} (ID: ${lista.id})`);
-    });
+    if (response.data.value && response.data.value.length > 0) {
+      const driveId = response.data.value[0].id;
+      console.log(`✅ Drive ID encontrado: ${driveId}`);
+      return driveId;
+    }
 
-    return response.data.value;
+    throw new Error("Nenhum drive encontrado");
   } catch (error) {
-    console.error("❌ Erro ao listar listas:", error.message);
+    console.error("❌ Erro ao obter Drive ID:", error.message);
     throw error;
   }
 }
 
 /**
- * Encontrar lista "Aderência"
+ * Obter ID do arquivo Excel
  */
-function encontrarListaAderencia(listas) {
-  console.log("\n🔍 Procurando lista 'Aderência'...");
-  const lista = listas.find(
-    (l) =>
-      l.displayName?.toLowerCase() === "aderência" ||
-      l.displayName?.toLowerCase() === "aderencia" ||
-      l.name?.toLowerCase() === "aderência" ||
-      l.name?.toLowerCase() === "aderencia"
+async function obterIdArquivoExcel(token, driveId) {
+  console.log("\n🔍 Buscando arquivo Excel na pasta específica...");
+  try {
+    const caminhoArquivo = "/General/SEGURANÇA DO TRABALHO - GERAL/ROTAS/Gestão SST_Condições de Riscos.xlsm";
+    
+    const response = await axios.get(
+      `https://graph.microsoft.com/v1.0/drives/${driveId}/root:${encodeURI(caminhoArquivo)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        timeout: 10000,
+      }
+    );
+
+    console.log(`✅ Arquivo Excel encontrado: ${response.data.name}`);
+    console.log(`   ID: ${response.data.id}`);
+    return response.data.id;
+  } catch (error) {
+    console.error("❌ Erro ao obter arquivo Excel:", error.message);
+    throw error;
+  }
+}
+
+/**
+ * Listar abas do Excel
+ */
+async function listarAbas(token, itemId) {
+  console.log("\n📋 Listando abas do Excel...");
+  try {
+    const response = await axios.get(
+      `https://graph.microsoft.com/v1.0/me/drive/items/${itemId}/workbook/worksheets`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        timeout: 10000,
+      }
+    );
+
+    console.log(`✅ ${response.data.value.length} abas encontradas:`);
+    response.data.value.forEach((aba) => {
+      console.log(`  - ${aba.name} (ID: ${aba.id})`);
+    });
+
+    return response.data.value;
+  } catch (error) {
+    console.error("❌ Erro ao listar abas:", error.message);
+    throw error;
+  }
+}
+
+/**
+ * Encontrar aba "Aderência"
+ */
+function encontrarAbaAderencia(abas) {
+  console.log("\n🔍 Procurando aba 'Aderência'...");
+  const aba = abas.find(
+    (a) =>
+      a.name?.toLowerCase() === "aderência" ||
+      a.name?.toLowerCase() === "aderencia"
   );
 
-  if (lista) {
-    console.log(`✅ Lista 'Aderência' encontrada: ${lista.id}`);
-    return lista;
+  if (aba) {
+    console.log(`✅ Aba 'Aderência' encontrada: ${aba.id}`);
+    return aba;
   } else {
-    console.error("❌ Lista 'Aderência' não encontrada");
+    console.error("❌ Aba 'Aderência' não encontrada");
     return null;
   }
 }
 
 /**
- * Enviar dados para a lista
+ * Listar tabelas na aba
  */
-async function enviarDados(token, siteId, listaId) {
-  console.log("\n📤 Enviando dados para a lista...");
+async function listarTabelas(token, itemId, abaId) {
+  console.log("\n📋 Listando tabelas na aba...");
   try {
-    const dados = {
-      "N° ROTA": "ROTA-TESTE-001",
-      "SETOR": "Produção",
-      "TÉCNICO DE SEGURANÇA": "João Silva",
-      "MANUTENÇÃO": "Carlos Santos",
-      "PRODUÇÃO": "Maria Oliveira",
-      "CONVIDADOS": "Pedro Costa",
-      "TODOS PRESENTES?": "SIM",
-      "DATA PREVISTA": "2026-01-08",
-      "DATA REALIZADA": "2026-01-08",
-      "STATUS": "CONCLUÍDO",
-    };
+    const response = await axios.get(
+      `https://graph.microsoft.com/v1.0/me/drive/items/${itemId}/workbook/worksheets/${abaId}/tables`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        timeout: 10000,
+      }
+    );
+
+    console.log(`✅ ${response.data.value.length} tabelas encontradas:`);
+    response.data.value.forEach((tabela) => {
+      console.log(`  - ${tabela.name} (ID: ${tabela.id})`);
+    });
+
+    return response.data.value;
+  } catch (error) {
+    console.error("❌ Erro ao listar tabelas:", error.message);
+    throw error;
+  }
+}
+
+/**
+ * Adicionar linha na tabela
+ */
+async function adicionarLinha(token, itemId, abaId, tabelaId) {
+  console.log("\n📤 Adicionando linha na tabela...");
+  try {
+    const dados = [
+      "ROTA-TESTE-001",
+      "Produção",
+      "João Silva",
+      "Carlos Santos",
+      "Maria Oliveira",
+      "Pedro Costa",
+      "SIM",
+      "2026-01-08",
+      "2026-01-08",
+      "CONCLUÍDO",
+    ];
 
     console.log("Dados a enviar:");
     console.log(JSON.stringify(dados, null, 2));
 
     const response = await axios.post(
-      `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listaId}/items`,
+      `https://graph.microsoft.com/v1.0/me/drive/items/${itemId}/workbook/worksheets/${abaId}/tables/${tabelaId}/rows/add`,
       {
-        fields: dados,
+        values: [dados],
       },
       {
         headers: {
@@ -171,12 +259,10 @@ async function enviarDados(token, siteId, listaId) {
       }
     );
 
-    console.log(`✅ Dados enviados com sucesso!`);
-    console.log(`  Item ID: ${response.data.id}`);
-    console.log(`  Web URL: ${response.data.webUrl || "N/A"}`);
+    console.log(`✅ Linha adicionada com sucesso!`);
     return response.data;
   } catch (error) {
-    console.error("❌ Erro ao enviar dados:", error.message);
+    console.error("❌ Erro ao adicionar linha:", error.message);
     if (error.response?.data) {
       console.error("Detalhes do erro:", JSON.stringify(error.response.data, null, 2));
     }
@@ -191,15 +277,24 @@ async function executarTeste() {
   try {
     const token = await obterToken();
     const siteId = await obterSiteId(token);
-    const listas = await listarListas(token, siteId);
-    const listaAderencia = encontrarListaAderencia(listas);
+    const driveId = await obterDriveId(token, siteId);
+    const itemId = await obterIdArquivoExcel(token, driveId);
+    const abas = await listarAbas(token, itemId);
+    const abaAderencia = encontrarAbaAderencia(abas);
 
-    if (!listaAderencia) {
-      console.log("\n❌ Teste falhou: Lista 'Aderência' não encontrada");
+    if (!abaAderencia) {
+      console.log("\n❌ Teste falhou: Aba 'Aderência' não encontrada");
       process.exit(1);
     }
 
-    const resultado = await enviarDados(token, siteId, listaAderencia.id);
+    const tabelas = await listarTabelas(token, itemId, abaAderencia.id);
+    
+    if (tabelas.length === 0) {
+      console.log("\n⚠️ Aviso: Nenhuma tabela encontrada na aba");
+      console.log("Procurando por tabela nomeada 'Aderência'...");
+    }
+
+    const resultado = await adicionarLinha(token, itemId, abaAderencia.id, "Aderência");
 
     console.log("\n✅ Teste concluído com sucesso!");
     console.log("Dados foram enviados para o SharePoint com sucesso!");
