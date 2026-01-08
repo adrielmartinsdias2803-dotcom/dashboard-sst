@@ -166,68 +166,70 @@ export default function Home() {
             <p className="text-slate-600 text-sm mt-1">Acesse ferramentas essenciais de gestão</p>
           </div>
           <div className="p-8">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-4">
               <Button 
                 onClick={handleForceSync}
                 disabled={isSyncing}
-                className="gap-3 h-14 text-base font-semibold bg-gradient-to-r from-primary to-blue-700 hover:from-primary/90 hover:to-blue-700/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
+                className="flex flex-col items-center justify-center gap-2 px-4 py-4 bg-gradient-to-br from-primary to-blue-700 hover:from-primary/90 hover:to-blue-700/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-lg font-semibold text-sm h-auto whitespace-normal disabled:opacity-50"
               >
                 {isSyncing ? (
                   <>
                     <Loader2 className="h-5 w-5 animate-spin" />
-                    Sincronizando...
+                    <span>Sincronizando...</span>
                   </>
                 ) : (
                   <>
                     <RefreshCw className="h-5 w-5" />
-                    Sincronização
+                    <span>Sincronização</span>
                   </>
                 )}
               </Button>
-               <button
+              <button
                 onClick={handleAgendarRota}
-                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:from-amber-600 hover:to-amber-700 cursor-pointer"
+                className="flex flex-col items-center justify-center gap-2 px-4 py-4 bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 h-auto whitespace-normal cursor-pointer"
                 title="Agendar uma nova rota de segurança"
               >
                 <Calendar className="h-5 w-5" />
-                Agendar Rota
+                <span>Agendar Rota</span>
               </button>
               <button
                 onClick={handlePowerBIAccess}
-                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-primary to-blue-700 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:from-primary/90 hover:to-blue-700/90 cursor-pointer"
+                className="flex flex-col items-center justify-center gap-2 px-4 py-4 bg-gradient-to-br from-primary to-blue-700 hover:from-primary/90 hover:to-blue-700/90 text-white rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 h-auto whitespace-normal cursor-pointer"
                 title="Abrir Dashboard PowerBI em nova aba"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
                 </svg>
-                Dashboard PowerBI
+                <span>Dashboard PowerBI</span>
               </button>
               <button
                 onClick={() => window.location.href = '/admin/dashboard'}
-                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-red-700 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:bg-red-800 cursor-pointer"
+                className="flex flex-col items-center justify-center gap-2 px-4 py-4 bg-gradient-to-br from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 h-auto whitespace-normal cursor-pointer"
                 title="Acessar Painel de Segurança do Trabalho"
               >
-                🔐 Segurança do Trabalho
+                <span className="text-lg">🔐</span>
+                <span>Segurança do Trabalho</span>
               </button>
               <button
                 onClick={() => window.location.href = '/painel-rotas'}
-                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-slate-700 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:bg-slate-800 cursor-pointer"
+                className="flex flex-col items-center justify-center gap-2 px-4 py-4 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 h-auto whitespace-normal cursor-pointer"
                 title="Acessar Painel de Controle de Rotas"
               >
-                📋 Painel de Rotas
-              </button>
-              <button
-                onClick={() => {
-                  const url = 'https://mococa.sharepoint.com/:x:/s/msteams_6115f4_553804/IQAC1WtO39XDR6XhDrcEMBqNAaEW-EuEv7JV7Io_fYzQaxs?email=sandy.nascimento%40mococa.com.br&e=BlyQSz';
-                  window.open(url, '_blank');
-                }}
-                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-yellow-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:bg-yellow-600 cursor-pointer"
-                title="Acessar Planilha Condição de Risco"
-              >
-                <FileText className="h-5 w-5" />
-                Planilha Condição de Risco
+                <span className="text-lg">📋</span>
+                <span>Painel de Rotas</span>
               </button>
             </div>
+            <button
+              onClick={() => {
+                const url = 'https://mococa.sharepoint.com/:x:/s/msteams_6115f4_553804/IQAC1WtO39XDR6XhDrcEMBqNAaEW-EuEv7JV7Io_fYzQaxs?email=sandy.nascimento%40mococa.com.br&e=BlyQSz';
+                window.open(url, '_blank');
+              }}
+              className="w-full flex flex-col items-center justify-center gap-2 px-4 py-4 bg-gradient-to-br from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 h-auto whitespace-normal cursor-pointer"
+              title="Acessar Planilha Condição de Risco"
+            >
+              <FileText className="h-5 w-5" />
+              <span>Planilha Condição de Risco</span>
+            </button>
           </div>
         </div>
 
