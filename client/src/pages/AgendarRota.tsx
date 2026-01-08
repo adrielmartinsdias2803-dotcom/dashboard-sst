@@ -53,6 +53,17 @@ export default function AgendarRota() {
     "Administrativo",
   ];
 
+  const setoresConvidados = [
+    "PCP",
+    "Qualidade",
+    "Almoxarifado",
+    "Melhoria Contínua",
+    "Diretoria",
+    "Facilities",
+    "Meio Ambiente",
+    "P&D",
+  ];
+
   // Mutation para criar rota
   const criarRotaMutation = trpc.rotas.createRota.useMutation({
     onSuccess: () => {
@@ -91,13 +102,31 @@ export default function AgendarRota() {
     }));
   };
 
+  const handleConvidadoChange = (setor: string, isChecked: boolean) => {
+    const convidadosArray = formData.convidados ? formData.convidados.split(", ") : [];
+    
+    if (isChecked) {
+      convidadosArray.push(setor);
+    } else {
+      const index = convidadosArray.indexOf(setor);
+      if (index > -1) {
+        convidadosArray.splice(index, 1);
+      }
+    }
+    
+    setFormData((prev) => ({
+      ...prev,
+      convidados: convidadosArray.join(", "),
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validação básica
     if (!formData.dataRota || !formData.horaRota || !formData.setor || !formData.tecnicoSST || 
-        !formData.representanteManutenção || !formData.representanteProducao) {
-      toast.error("Por favor, preencha todos os campos obrigatórios");
+        !formData.representanteManutenção || !formData.representanteProducao || !formData.convidados) {
+      toast.error("Por favor, preencha todos os campos obrigatórios, incluindo Convidados");
       return;
     }
 
@@ -276,24 +305,33 @@ export default function AgendarRota() {
               <div className="space-y-4 border-t pt-6">
                 <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  Convidados (Opcional)
+                  Convidados (Obrigatório) *
                 </h3>
 
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Departamentos/Pessoas Convidadas
-                  </label>
-                  <textarea
-                    name="convidados"
-                    value={formData.convidados}
-                    onChange={handleInputChange}
-                    placeholder="Ex: PCP (João Silva), Qualidade (Maria Santos), Almoxarifado, etc."
-                    rows={3}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  ></textarea>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Você pode convidar: PCP, Qualidade, Almoxarifado, Melhoria Contínua, Diretoria, Facilities, Meio Ambiente, Pesquisa e Desenvolvimento
+                <div className="space-y-3">
+                  <p className="text-sm text-slate-600">
+                    Selecione os setores que devem ser convidados para a rota:
                   </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    {setoresConvidados.map((setor) => (
+                      <label key={setor} className="flex items-center gap-3 cursor-pointer hover:bg-slate-100 p-2 rounded transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={formData.convidados.includes(setor)}
+                          onChange={(e) => handleConvidadoChange(setor, e.target.checked)}
+                          className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-2 focus:ring-primary cursor-pointer"
+                        />
+                        <span className="text-sm font-medium text-slate-700">{setor}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {formData.convidados && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <p className="text-sm text-slate-700">
+                        <span className="font-semibold">Setores selecionados:</span> {formData.convidados}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -351,82 +389,37 @@ export default function AgendarRota() {
                 </p>
               </div>
 
-              {/* Buttons */}
-              <div className="flex gap-4 justify-end border-t pt-6">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setLocation("/")}
-                  className="px-6 py-2"
-                >
-                  Cancelar
-                </Button>
+              {/* Submit Button */}
+              <div className="flex gap-4 pt-6 border-t">
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="gap-2 px-6 py-2 bg-gradient-to-r from-primary to-blue-700 hover:from-primary/90 hover:to-blue-700/90"
+                  className="flex-1 bg-gradient-to-r from-primary to-blue-700 hover:from-primary/90 hover:to-blue-800 text-white font-semibold py-3 rounded-lg transition-all"
                 >
                   {isSubmitting ? (
                     <>
-                      <span className="animate-spin">⏳</span>
+                      <span className="animate-spin mr-2">⏳</span>
                       Agendando...
                     </>
                   ) : (
                     <>
-                      <Send className="h-4 w-4" />
+                      <Send className="h-4 w-4 mr-2 inline" />
                       Agendar Rota
                     </>
                   )}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => setLocation("/")}
+                  variant="outline"
+                  className="px-8 py-3 rounded-lg"
+                >
+                  Cancelar
                 </Button>
               </div>
             </form>
           </CardContent>
         </Card>
-
-        {/* Info Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <Calendar className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-slate-900">Prazo</h4>
-                  <p className="text-sm text-slate-600 mt-1">45 dias para agendar a rota</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="bg-yellow-100 p-3 rounded-lg">
-                  <Users className="h-6 w-6 text-yellow-600" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-slate-900">Participantes</h4>
-                  <p className="text-sm text-slate-600 mt-1">Mínimo 3 obrigatórios</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="bg-green-100 p-3 rounded-lg">
-                  <CheckCircle2 className="h-6 w-6 text-green-600" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-slate-900">Confirmação</h4>
-                  <p className="text-sm text-slate-600 mt-1">Você controla o envio de email</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       </main>
     </div>
   );
