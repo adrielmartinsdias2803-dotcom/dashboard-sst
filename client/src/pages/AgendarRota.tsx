@@ -7,11 +7,13 @@ import {
   Clock, 
   CheckCircle2,
   ArrowLeft,
-  Send
+  Send,
+  Mail
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import { trpc } from "@/lib/trpc";
 
 interface FormData {
   dataRota: string;
@@ -22,6 +24,7 @@ interface FormData {
   representanteProducao: string;
   convidados: string;
   observacoes: string;
+  emailNotificacao: string;
 }
 
 export default function AgendarRota() {
@@ -36,6 +39,7 @@ export default function AgendarRota() {
     representanteProducao: "",
     convidados: "",
     observacoes: "",
+    emailNotificacao: "",
   });
 
   const setores = [
@@ -48,6 +52,34 @@ export default function AgendarRota() {
     "PCP",
     "Administrativo",
   ];
+
+  // Mutation para criar rota
+  const criarRotaMutation = trpc.rotas.createRota.useMutation({
+    onSuccess: () => {
+      toast.success("✅ Rota agendada com sucesso! Verifique no painel de administração.");
+      
+      // Resetar formulário
+      setFormData({
+        dataRota: "",
+        horaRota: "",
+        setor: "",
+        tecnicoSST: "",
+        representanteManutenção: "",
+        representanteProducao: "",
+        convidados: "",
+        observacoes: "",
+        emailNotificacao: "",
+      });
+
+      // Voltar para home após 2 segundos
+      setTimeout(() => {
+        setLocation("/");
+      }, 2000);
+    },
+    onError: (error: any) => {
+      toast.error(`❌ Erro ao agendar: ${error.message}`);
+    },
+  });
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -63,7 +95,8 @@ export default function AgendarRota() {
     e.preventDefault();
     
     // Validação básica
-    if (!formData.dataRota || !formData.horaRota || !formData.setor || !formData.tecnicoSST) {
+    if (!formData.dataRota || !formData.horaRota || !formData.setor || !formData.tecnicoSST || 
+        !formData.representanteManutenção || !formData.representanteProducao) {
       toast.error("Por favor, preencha todos os campos obrigatórios");
       return;
     }
@@ -71,29 +104,19 @@ export default function AgendarRota() {
     setIsSubmitting(true);
     
     try {
-      // Simular envio de formulário
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      toast.success("Rota agendada com sucesso! Confirmação será enviada por email.");
-      
-      // Resetar formulário
-      setFormData({
-        dataRota: "",
-        horaRota: "",
-        setor: "",
-        tecnicoSST: "",
-        representanteManutenção: "",
-        representanteProducao: "",
-        convidados: "",
-        observacoes: "",
+      // Salvar rota no banco de dados
+      await criarRotaMutation.mutateAsync({
+        dataRota: formData.dataRota,
+        horaRota: formData.horaRota,
+        setor: formData.setor,
+        tecnicoSST: formData.tecnicoSST,
+        representanteManutenção: formData.representanteManutenção,
+        representanteProducao: formData.representanteProducao,
+        convidados: formData.convidados || undefined,
+        observacoes: formData.observacoes || undefined,
       });
-
-      // Voltar para home após 2 segundos
-      setTimeout(() => {
-        setLocation("/");
-      }, 2000);
     } catch (error) {
-      toast.error("Erro ao agendar rota. Tente novamente.");
+      // Erro já é tratado pelo mutation
     } finally {
       setIsSubmitting(false);
     }
@@ -296,10 +319,35 @@ export default function AgendarRota() {
                 </div>
               </div>
 
+              {/* Seção 5: Email de Notificação */}
+              <div className="space-y-4 border-t pt-6">
+                <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                  <Mail className="h-5 w-5" />
+                  Notificação por Email (Opcional)
+                </h3>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Email para Receber Confirmação
+                  </label>
+                  <input
+                    type="email"
+                    name="emailNotificacao"
+                    value={formData.emailNotificacao}
+                    onChange={handleInputChange}
+                    placeholder="seu.email@mococa.com.br"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">
+                    Se preenchido, você poderá enviar a confirmação da rota por email após o agendamento.
+                  </p>
+                </div>
+              </div>
+
               {/* Info Box */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-slate-700">
-                  <span className="font-semibold">ℹ️ Informação importante:</span> Após o agendamento, você receberá uma confirmação por email. A rota deve ser realizada dentro de 45 dias a partir da data de agendamento.
+                  <span className="font-semibold">ℹ️ Informação importante:</span> A rota será agendada imediatamente e aparecerá no painel de administração. Você poderá enviar a confirmação por email de forma manual. A rota deve ser realizada dentro de 45 dias a partir da data de agendamento.
                 </p>
               </div>
 
@@ -373,7 +421,7 @@ export default function AgendarRota() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-slate-900">Confirmação</h4>
-                  <p className="text-sm text-slate-600 mt-1">Email de confirmação enviado</p>
+                  <p className="text-sm text-slate-600 mt-1">Você controla o envio de email</p>
                 </div>
               </div>
             </CardContent>

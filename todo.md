@@ -28,6 +28,10 @@
 - [x] Criar testes unitários para admin dashboard (28 testes)
 - [x] Renomear painel para Seguranca do Trabalho
 - [x] Adicionar botao Voltar funcional
+- [x] Debugar problema de agendamento nao aparecendo
+- [x] Conectar formulario com tRPC para salvar dados
+- [x] Remover envio automatico de email
+- [x] Adicionar campo de email manual
 - [x] Salvar checkpoint final
 
 ## Funcionalidades Futuras
