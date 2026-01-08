@@ -107,7 +107,7 @@ export default function Home() {
   };
 
   const handlePowerBIAccess = () => {
-    const powerbiUrl = "https://app.powerbi.com/groups/me/reports/5a087ca6-f606-4cb2-af76-6a3ca94a08c2/868e18c05a0d8320c33c?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&experience=power-bi";
+    const powerbiUrl = "https://app.powerbi.com/groups/me/reports/32f295ad-5fde-40e7-bb48-7ad7593f3000?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&pbi_source=linkShare";
     try {
       window.open(powerbiUrl, "_blank");
       toast.success("Abrindo Dashboard PowerBI...");
