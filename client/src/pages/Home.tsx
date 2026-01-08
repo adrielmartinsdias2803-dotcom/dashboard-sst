@@ -517,177 +517,156 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Fluxograma de Rotas - Versão Premium */}
+        {/* Processo de Rotas de Segurança - Versão Corporativa */}
         <section className="mb-16">
           <div className="flex items-center gap-3 mb-8">
             <Calendar className="h-8 w-8 text-primary" />
-            <h2 className="text-4xl font-display font-bold text-primary">Realização de Rotas de Segurança</h2>
+            <h2 className="text-4xl font-display font-bold text-primary">Processo de Rotas de Segurança</h2>
           </div>
+          
+          <p className="text-slate-600 text-lg mb-12 max-w-4xl">As rotas de segurança são inspeções sistemáticas realizadas nos setores da Mococa para identificar, avaliar e controlar condições de risco. O processo segue uma metodologia estruturada em cinco etapas sequenciais, garantindo a participação de múltiplos stakeholders e a implementação efetiva de ações corretivas.</p>
 
-          <Card className="border-0 shadow-2xl bg-gradient-to-br from-white via-slate-50 to-white overflow-hidden">
-            <CardContent className="p-8">
-              {/* Fluxograma Horizontal (Desktop) */}
-              <div className="hidden md:block">
-                <div className="relative py-8">
-                  {/* Linha conectora de fundo */}
-                  <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-purple-400 via-yellow-400 to-green-400 opacity-20 rounded-full transform -translate-y-1/2"></div>
-                  
-                  <div className="flex items-center justify-between gap-4 relative z-10">
-                    {[
-                      {
-                        step: 1,
-                        title: "Cadastro da Rota",
-                        subtitle: "Iniciar novo processo",
-                        icon: "📋",
-                        participants: ["Técnico SST", "Manutenção", "Produção"],
-                        color: "blue",
-                        gradient: "from-blue-500 to-blue-600"
-                      },
-                      {
-                        step: 2,
-                        title: "Convite de Participantes",
-                        subtitle: "Engajar stakeholders",
-                        icon: "👥",
-                        participants: ["PCP", "Qualidade", "Almoxerifado", "Melhoria Contínua", "Diretoria", "Facilities", "Meio Ambiente", "P&D"],
-                        color: "purple",
-                        gradient: "from-purple-500 to-purple-600"
-                      },
-                      {
-                        step: 3,
-                        title: "Agendamento",
-                        subtitle: "Definir cronograma",
-                        icon: "📅",
-                        participants: ["Prazo: 45 dias", "(1 mês e meio)"],
-                        color: "yellow",
-                        gradient: "from-yellow-500 to-yellow-600"
-                      },
-                      {
-                        step: 4,
-                        title: "Execução",
-                        subtitle: "Realizar inspeção",
-                        icon: "✅",
-                        participants: ["Inspeção", "Coleta de dados", "Documentação"],
-                        color: "green",
-                        gradient: "from-green-500 to-green-600"
-                      }
-                    ].map((phase, idx) => (
-                      <div key={idx} className="flex-1 flex flex-col items-center group">
-                        {/* Card com efeito 3D premium */}
-                        <div className="w-full relative mb-4">
-                          {/* Glow effect */}
-                          <div className="absolute -inset-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-3xl blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
-                          
-                          {/* Card principal */}
-                          <div className="relative bg-white rounded-3xl p-8 border-2 border-slate-100 hover:border-slate-300 transition-all duration-500 shadow-xl hover:shadow-2xl hover:-translate-y-3 hover:scale-105">
-                            {/* Número com efeito de pulso */}
-                            <div className="flex justify-center mb-6">
-                              <div className={`relative w-16 h-16 rounded-full bg-gradient-to-br ${phase.gradient} text-white flex items-center justify-center font-bold text-2xl shadow-lg`}>
-                                <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                                {phase.step}
-                              </div>
-                            </div>
-                            
-                            {/* Ícone com animação */}
-                            <div className="text-6xl text-center mb-4 group-hover:scale-125 transition-transform duration-300 origin-center">{phase.icon}</div>
-                            
-                            {/* Título */}
-                            <h3 className="text-lg font-bold text-slate-900 text-center mb-1">{phase.title}</h3>
-                            
-                            {/* Subtítulo */}
-                            <p className="text-xs text-slate-500 text-center mb-4 italic">{phase.subtitle}</p>
-                            
-                            {/* Divisor decorativo */}
-                            <div className="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent mb-4"></div>
-                            
-                            {/* Participantes */}
-                            <div className="space-y-2">
-                              {phase.participants.map((participant, pidx) => (
-                                <div key={pidx} className="flex items-center gap-2 text-xs text-slate-700 hover:text-slate-900 transition-colors">
-                                  <div className={`w-2 h-2 rounded-full bg-gradient-to-r from-${phase.color}-400 to-${phase.color}-600 group-hover:scale-150 transition-transform`}></div>
-                                  <span className="font-medium">{participant}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* Seta conectora com animação */}
-                        {idx < 3 && (
-                          <div className="flex justify-center py-2">
-                            <div className="text-4xl text-primary animate-pulse">→</div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+          {/* Fluxo 4: Cadastro da Rota */}
+          <div className="mb-12">
+            <Card className="border-l-4 border-l-blue-600 bg-gradient-to-br from-blue-50 to-white">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-6">
+                  <div className="text-5xl">📋</div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="inline-block bg-blue-600 text-white font-bold px-4 py-2 rounded-full text-sm">Fluxo 4</span>
+                      <h3 className="text-2xl font-bold text-blue-700">Cadastro da Rota (Agendamento)</h3>
+                    </div>
+                    <p className="text-slate-700 mb-4 leading-relaxed">O cadastro da rota representa o ponto de partida do processo de inspeção de segurança. Nesta etapa, define-se o setor a ser inspecionado, agendando-se a rota dentro de um prazo estabelecido pela organização.</p>
+                    <div className="bg-white rounded-lg p-4 border border-blue-200 mb-4">
+                      <p className="font-semibold text-slate-800 mb-3">Participantes Obrigatórios:</p>
+                      <ul className="space-y-2 text-slate-700">
+                        <li className="flex items-center gap-2"><span className="text-blue-600 font-bold">•</span> <span className="font-medium">Técnico de Segurança do Trabalho</span> - Responsável pela coordenação e documentação</li>
+                        <li className="flex items-center gap-2"><span className="text-blue-600 font-bold">•</span> <span className="font-medium">Representante da Manutenção</span> - Conhecimento técnico de equipamentos</li>
+                        <li className="flex items-center gap-2"><span className="text-blue-600 font-bold">•</span> <span className="font-medium">Representante da Produção</span> - Conhecimento das operações e riscos do dia a dia</li>
+                      </ul>
+                    </div>
+                    <p className="text-slate-600 text-sm italic"><span className="font-semibold">Prazo de Agendamento:</span> A rota deve ser agendada com antecedência de até 45 dias (1 mês e meio), permitindo planejamento adequado e confirmação de participantes.</p>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
+          </div>
 
-              {/* Fluxograma Vertical (Mobile) */}
-              <div className="md:hidden space-y-4">
-                {[
-                  {
-                    step: 1,
-                    title: "Cadastro da Rota",
-                    icon: "📋",
-                    participants: ["Técnico SST", "Manutenção", "Produção"],
-                    color: "blue",
-                    gradient: "from-blue-500 to-blue-600"
-                  },
-                  {
-                    step: 2,
-                    title: "Convite de Participantes",
-                    icon: "👥",
-                    participants: ["PCP", "Qualidade", "Almoxerifado", "Melhoria Contínua", "Diretoria", "Facilities", "Meio Ambiente", "P&D"],
-                    color: "purple",
-                    gradient: "from-purple-500 to-purple-600"
-                  },
-                  {
-                    step: 3,
-                    title: "Agendamento",
-                    icon: "📅",
-                    participants: ["Prazo: 45 dias (1 mês e meio)"],
-                    color: "yellow",
-                    gradient: "from-yellow-500 to-yellow-600"
-                  },
-                  {
-                    step: 4,
-                    title: "Execução",
-                    icon: "✅",
-                    participants: ["Inspeção", "Coleta de dados", "Documentação"],
-                    color: "green",
-                    gradient: "from-green-500 to-green-600"
-                  }
-                ].map((phase, idx) => (
-                  <div key={idx}>
-                    <div className="bg-white rounded-2xl p-6 border-2 border-slate-100 shadow-lg hover:shadow-xl transition-all">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className={`bg-gradient-to-br ${phase.gradient} text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg`}>
-                          {phase.step}
-                        </div>
-                        <div className="text-3xl">{phase.icon}</div>
-                        <h3 className="text-sm font-bold text-slate-900">{phase.title}</h3>
-                      </div>
-                      <div className="space-y-2 ml-16">
-                        {phase.participants.map((participant, pidx) => (
-                          <div key={pidx} className="flex items-center gap-2 text-xs text-slate-700">
-                            <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${phase.gradient}`}></div>
-                            <span>{participant}</span>
-                          </div>
-                        ))}
-                      </div>
+          {/* Fluxo 5: Rota em Campo */}
+          <div className="mb-12">
+            <Card className="border-l-4 border-l-orange-600 bg-gradient-to-br from-orange-50 to-white">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-6">
+                  <div className="text-5xl">🔍</div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="inline-block bg-orange-600 text-white font-bold px-4 py-2 rounded-full text-sm">Fluxo 5</span>
+                      <h3 className="text-2xl font-bold text-orange-700">Rota em Campo (Identificação de Riscos)</h3>
                     </div>
-                    {idx < 3 && (
-                      <div className="flex justify-center py-2">
-                        <div className="text-2xl text-primary">↓</div>
-                      </div>
-                    )}
+                    <p className="text-slate-700 mb-4 leading-relaxed">Durante a rota em campo, a equipe multidisciplinar percorre o setor definido, realizando uma inspeção minuciosa e sistemática de todas as áreas, máquinas, processos e condições ambientais.</p>
+                    <div className="bg-white rounded-lg p-4 border border-orange-200">
+                      <p className="font-semibold text-slate-800 mb-3">Atividades Realizadas:</p>
+                      <ul className="space-y-2 text-slate-700">
+                        <li className="flex items-center gap-2"><span className="text-orange-600 font-bold">✓</span> Identificação de todas as condições de risco existentes</li>
+                        <li className="flex items-center gap-2"><span className="text-orange-600 font-bold">✓</span> Registro fotográfico e documental das situações encontradas</li>
+                        <li className="flex items-center gap-2"><span className="text-orange-600 font-bold">✓</span> Classificação preliminar dos riscos (Crítico, Alto, Médio, Baixo)</li>
+                        <li className="flex items-center gap-2"><span className="text-orange-600 font-bold">✓</span> Coleta de informações junto aos colaboradores do setor</li>
+                        <li className="flex items-center gap-2"><span className="text-orange-600 font-bold">✓</span> Documentação detalhada em formulário padronizado</li>
+                      </ul>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Fluxo 6: Plano de Ação */}
+          <div className="mb-12">
+            <Card className="border-l-4 border-l-yellow-600 bg-gradient-to-br from-yellow-50 to-white">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-6">
+                  <div className="text-5xl">📊</div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="inline-block bg-yellow-600 text-white font-bold px-4 py-2 rounded-full text-sm">Fluxo 6</span>
+                      <h3 className="text-2xl font-bold text-yellow-700">Plano de Ação</h3>
+                    </div>
+                    <p className="text-slate-700 mb-4 leading-relaxed">Após a conclusão da inspeção em campo, a equipe se reúne para análise consolidada dos riscos identificados, definindo estratégias de controle e ações corretivas.</p>
+                    <div className="bg-white rounded-lg p-4 border border-yellow-200">
+                      <p className="font-semibold text-slate-800 mb-3">Elementos do Plano de Ação:</p>
+                      <ul className="space-y-2 text-slate-700">
+                        <li className="flex items-center gap-2"><span className="text-yellow-600 font-bold">→</span> <span className="font-medium">Descrição detalhada</span> de cada risco identificado</li>
+                        <li className="flex items-center gap-2"><span className="text-yellow-600 font-bold">→</span> <span className="font-medium">Medidas de controle</span> propostas (eliminação, substituição, engenharia, administrativas, EPI)</li>
+                        <li className="flex items-center gap-2"><span className="text-yellow-600 font-bold">→</span> <span className="font-medium">Responsável</span> pela execução de cada ação</li>
+                        <li className="flex items-center gap-2"><span className="text-yellow-600 font-bold">→</span> <span className="font-medium">Prazo</span> definido para implementação</li>
+                        <li className="flex items-center gap-2"><span className="text-yellow-600 font-bold">→</span> <span className="font-medium">Priorização</span> conforme classificação de risco</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Fluxo 7: Execução */}
+          <div className="mb-12">
+            <Card className="border-l-4 border-l-green-600 bg-gradient-to-br from-green-50 to-white">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-6">
+                  <div className="text-5xl">⚙️</div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="inline-block bg-green-600 text-white font-bold px-4 py-2 rounded-full text-sm">Fluxo 7</span>
+                      <h3 className="text-2xl font-bold text-green-700">Execução</h3>
+                    </div>
+                    <p className="text-slate-700 mb-4 leading-relaxed">Nesta etapa, os responsáveis designados executam as ações corretivas conforme definido no plano de ação, dentro dos prazos estabelecidos e de acordo com as especificações técnicas.</p>
+                    <div className="bg-white rounded-lg p-4 border border-green-200">
+                      <p className="font-semibold text-slate-800 mb-3">Diretrizes para Execução:</p>
+                      <ul className="space-y-2 text-slate-700">
+                        <li className="flex items-center gap-2"><span className="text-green-600 font-bold">✓</span> Cumprimento rigoroso dos prazos estabelecidos</li>
+                        <li className="flex items-center gap-2"><span className="text-green-600 font-bold">✓</span> Utilização de materiais e métodos apropriados</li>
+                        <li className="flex items-center gap-2"><span className="text-green-600 font-bold">✓</span> Documentação fotográfica do antes e depois</li>
+                        <li className="flex items-center gap-2"><span className="text-green-600 font-bold">✓</span> Comunicação periódica do progresso</li>
+                        <li className="flex items-center gap-2"><span className="text-green-600 font-bold">✓</span> Envolvimento de colaboradores na implementação</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Fluxo 8: Verificação */}
+          <div className="mb-12">
+            <Card className="border-l-4 border-l-red-600 bg-gradient-to-br from-red-50 to-white">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-6">
+                  <div className="text-5xl">✅</div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="inline-block bg-red-600 text-white font-bold px-4 py-2 rounded-full text-sm">Fluxo 8</span>
+                      <h3 className="text-2xl font-bold text-red-700">Verificação (Avaliação Final)</h3>
+                    </div>
+                    <p className="text-slate-700 mb-4 leading-relaxed">A etapa final de verificação garante que as ações corretivas foram executadas adequadamente e que os riscos foram efetivamente eliminados ou controlados a níveis aceitáveis.</p>
+                    <div className="bg-white rounded-lg p-4 border border-red-200">
+                      <p className="font-semibold text-slate-800 mb-3">Critérios de Verificação:</p>
+                      <ul className="space-y-2 text-slate-700">
+                        <li className="flex items-center gap-2"><span className="text-red-600 font-bold">☑</span> Conformidade com as especificações do plano de ação</li>
+                        <li className="flex items-center gap-2"><span className="text-red-600 font-bold">☑</span> Efetividade das medidas implementadas</li>
+                        <li className="flex items-center gap-2"><span className="text-red-600 font-bold">☑</span> Eliminação ou redução adequada do risco</li>
+                        <li className="flex items-center gap-2"><span className="text-red-600 font-bold">☑</span> Ausência de novos riscos criados pelas ações</li>
+                        <li className="flex items-center gap-2"><span className="text-red-600 font-bold">☑</span> Registro final e fechamento da ação</li>
+                      </ul>
+                    </div>
+                    <p className="text-slate-600 text-sm mt-4 italic"><span className="font-semibold">Resultado:</span> Caso a verificação identifique inadequações, novas ações corretivas são definidas e o ciclo continua até a resolução completa do risco.</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </section>
+
       </main>
     </div>
   );
