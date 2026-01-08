@@ -124,6 +124,7 @@ export const appRouter = router({
         id: z.number(),
         responsavelConfirmacao: z.string(),
         observacoesConfirmacao: z.string().optional(),
+        todos_presentes: z.enum(["SIM", "NÃO"]).optional(),
       }))
       .mutation(async ({ input }: any) => {
         const db = await getDb();
@@ -144,18 +145,21 @@ export const appRouter = router({
         
         if (rota) {
           try {
-            await enviarDadosAderenciaSharePoint({
-              dataRota: rota.dataRota,
-              horaRota: rota.horaRota,
+            const todos_presentes = input.todos_presentes || "NÃO";
+            const statusAutomatico = todos_presentes === "SIM" ? "CONCLUÍDO" : "PENDENTE";
+            const resultado = await enviarDadosAderenciaSharePoint({
+              numero_rota: `ROTA-${rota.id}`,
               setor: rota.setor,
-              tecnicoSST: rota.tecnicoSST,
-              representanteManutenção: rota.representanteManutenção,
-              representanteProducao: rota.representanteProducao,
-              convidados: rota.convidados || undefined,
-              observacoes: rota.observacoes || undefined,
-              responsavelConfirmacao: input.responsavelConfirmacao,
-              dataConfirmacao: dataConfirmacao,
+              tecnico_seguranca: rota.tecnicoSST,
+              manutencao: rota.representanteManutenção,
+              producao: rota.representanteProducao,
+              convidados: rota.convidados || "",
+              todos_presentes: todos_presentes,
+              data_prevista: rota.dataRota,
+              data_realizada: "",
+              status: statusAutomatico,
             });
+            console.log("[API] Resultado envio SharePoint:", resultado);
           } catch (error) {
             console.error("[API] Erro ao enviar dados para SharePoint:", error);
           }

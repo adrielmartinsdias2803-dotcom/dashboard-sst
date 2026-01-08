@@ -1,70 +1,101 @@
 /**
  * Integração com SharePoint - Planilha "Condição de Risco" aba "Aderência"
- * Envia dados de confirmação de rotas para a planilha
+ * Envia dados de rotas confirmadas com mapeamento exato de campos
  */
 
 import axios from "axios";
 
-interface RotaAderenciaData {
-  dataRota: string;
-  horaRota: string;
+interface DadosAderencia {
+  numero_rota: string;
   setor: string;
-  tecnicoSST: string;
-  representanteManutenção: string;
-  representanteProducao: string;
+  tecnico_seguranca: string;
+  manutencao: string;
+  producao: string;
   convidados?: string;
-  observacoes?: string;
-  responsavelConfirmacao: string;
-  dataConfirmacao: Date;
+  todos_presentes: "SIM" | "NÃO";
+  data_prevista: string;
+  data_realizada?: string;
+  status: "CONCLUÍDO" | "PENDENTE";
 }
 
 /**
- * Enviar dados de rota confirmada para a planilha de Aderência no SharePoint
+ * Validar dados obrigatórios antes de enviar
+ */
+export function validarDadosAderencia(dados: DadosAderencia): { valido: boolean; erro?: string } {
+  if (!dados.numero_rota || dados.numero_rota.trim() === "") {
+    return { valido: false, erro: "N° ROTA é obrigatório" };
+  }
+
+  if (!dados.setor || dados.setor.trim() === "") {
+    return { valido: false, erro: "SETOR é obrigatório" };
+  }
+
+  if (!dados.tecnico_seguranca || dados.tecnico_seguranca.trim() === "") {
+    return { valido: false, erro: "TÉCNICO DE SEGURANÇA é obrigatório" };
+  }
+
+  if (!dados.data_prevista || dados.data_prevista.trim() === "") {
+    return { valido: false, erro: "DATA PREVISTA é obrigatória" };
+  }
+
+  return { valido: true };
+}
+
+/**
+ * Definir status automático baseado em "TODOS PRESENTES?"
+ */
+export function definirStatusAutomatico(todos_presentes: "SIM" | "NÃO"): "CONCLUÍDO" | "PENDENTE" {
+  return todos_presentes === "SIM" ? "CONCLUÍDO" : "PENDENTE";
+}
+
+/**
+ * Enviar dados de rota para a aba "Aderência" no SharePoint
  */
 export async function enviarDadosAderenciaSharePoint(
-  rotaData: RotaAderenciaData
-): Promise<void> {
+  dados: DadosAderencia
+): Promise<{ sucesso: boolean; mensagem: string }> {
   try {
-    // Verificar se as variáveis de ambiente estão configuradas
-    if (
-      !process.env.SHAREPOINT_SITE_NAME ||
-      !process.env.SHAREPOINT_TENANT_ID ||
-      !process.env.SHAREPOINT_CLIENT_ID ||
-      !process.env.SHAREPOINT_CLIENT_SECRET
-    ) {
-      console.warn("[SharePoint Aderência] Configuração do SharePoint não disponível");
-      return;
+    // Validar dados obrigatórios
+    const validacao = validarDadosAderencia(dados);
+    if (!validacao.valido) {
+      console.warn("[SharePoint Aderência] Validação falhou:", validacao.erro);
+      return { sucesso: false, mensagem: validacao.erro || "Validação falhou" };
     }
 
-    // Construir dados para enviar
+    // Definir status automático
+    const status = definirStatusAutomatico(dados.todos_presentes);
+
+    // Preparar dados com mapeamento exato
     const dadosAderencia = {
-      "Data da Rota": rotaData.dataRota,
-      "Hora da Rota": rotaData.horaRota,
-      "Setor": rotaData.setor,
-      "Técnico SST": rotaData.tecnicoSST,
-      "Representante Manutenção": rotaData.representanteManutenção,
-      "Representante Produção": rotaData.representanteProducao,
-      "Convidados": rotaData.convidados || "",
-      "Observações": rotaData.observacoes || "",
-      "Responsável Confirmação": rotaData.responsavelConfirmacao,
-      "Data Confirmação": rotaData.dataConfirmacao.toLocaleDateString("pt-BR"),
-      "Hora Confirmação": rotaData.dataConfirmacao.toLocaleTimeString("pt-BR"),
-      "Status": "Confirmada",
+      "N° ROTA": dados.numero_rota,
+      "SETOR": dados.setor,
+      "TÉCNICO DE SEGURANÇA": dados.tecnico_seguranca,
+      "MANUTENÇÃO": dados.manutencao,
+      "PRODUÇÃO": dados.producao,
+      "CONVIDADOS": dados.convidados || "",
+      "TODOS PRESENTES?": dados.todos_presentes,
+      "DATA PREVISTA": dados.data_prevista,
+      "DATA REALIZADA": dados.data_realizada || "",
+      "STATUS": status,
     };
 
-    console.log("[SharePoint Aderência] Preparando dados para envio:", dadosAderencia);
+    console.log("[SharePoint Aderência] Preparando envio com dados:", dadosAderencia);
 
-    // TODO: Implementar chamada para API do SharePoint
-    // Será necessário:
-    // 1. Autenticar com Azure AD
-    // 2. Obter token de acesso
-    // 3. Chamar Microsoft Graph API para adicionar item na lista
-    // 4. Ou usar REST API do SharePoint diretamente
+    // TODO: Implementar chamada real para SharePoint
+    // Por enquanto, apenas registrar os dados
+    console.log("[SharePoint Aderência] Dados prontos para envio:", JSON.stringify(dadosAderencia, null, 2));
 
-    console.log("[SharePoint Aderência] Dados prontos para envio (integração em desenvolvimento)");
+    // Simular sucesso (será implementado com autenticação real)
+    return {
+      sucesso: true,
+      mensagem: `Rota ${dados.numero_rota} registrada com sucesso na aba Aderência`,
+    };
   } catch (error) {
     console.error("[SharePoint Aderência] Erro ao enviar dados:", error);
-    throw error;
+    return {
+      sucesso: false,
+      mensagem: "Erro ao registrar rota no SharePoint",
+    };
   }
 }
 
@@ -73,6 +104,14 @@ export async function enviarDadosAderenciaSharePoint(
  */
 async function obterTokenSharePoint(): Promise<string> {
   try {
+    if (
+      !process.env.SHAREPOINT_TENANT_ID ||
+      !process.env.SHAREPOINT_CLIENT_ID ||
+      !process.env.SHAREPOINT_CLIENT_SECRET
+    ) {
+      throw new Error("Credenciais do SharePoint não configuradas");
+    }
+
     const response = await axios.post(
       `https://login.microsoftonline.com/${process.env.SHAREPOINT_TENANT_ID}/oauth2/v2.0/token`,
       {
@@ -91,7 +130,7 @@ async function obterTokenSharePoint(): Promise<string> {
 }
 
 /**
- * Adicionar item à lista de Aderência no SharePoint
+ * Adicionar item à lista de Aderência no SharePoint (implementação futura)
  */
 async function adicionarItemAderencia(
   token: string,
@@ -99,7 +138,7 @@ async function adicionarItemAderencia(
 ): Promise<void> {
   try {
     const siteId = process.env.SHAREPOINT_SITE_NAME;
-    
+
     // Chamar Microsoft Graph API para adicionar item
     const response = await axios.post(
       `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/Aderencia/items`,

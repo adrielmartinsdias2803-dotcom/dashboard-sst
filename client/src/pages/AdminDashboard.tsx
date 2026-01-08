@@ -46,6 +46,7 @@ export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [showPasswordError, setShowPasswordError] = useState(false);
+  const [todosPresentesMap, setTodosPresentesMap] = useState<Record<number, "SIM" | "NÃO">>({})
 
   // Mover hooks para FORA da condição de autenticação
   const listRotasQuery = trpc.rotas.listRotas.useQuery(
@@ -318,15 +319,33 @@ export default function AdminDashboard() {
                       )}
 
                       <div className="flex gap-3 pt-4 border-t">
+                        <div className="flex-1 space-y-2">
+                          <label className="block text-sm font-semibold text-gray-700">TODOS PRESENTES?</label>
+                          <select
+                            value={todosPresentesMap[rota.id] || "NÃO"}
+                            onChange={(e) => setTodosPresentesMap(prev => ({
+                              ...prev,
+                              [rota.id]: e.target.value as "SIM" | "NÃO"
+                            }))}
+                            className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg font-semibold"
+                          >
+                            <option value="NÃO">NÃO</option>
+                            <option value="SIM">SIM</option>
+                          </select>
+                        </div>
                         <Button
-                          onClick={() =>
+                          onClick={() => {
+                            if (!rota.setor || !rota.tecnicoSST || !rota.dataRota) {
+                              toast.error("❌ Campos obrigatórios faltando!");
+                              return;
+                            }
                             confirmarRotaMutation.mutate({
                               id: rota.id,
                               responsavelConfirmacao: "Administrador",
                               observacoesConfirmacao: "Confirmado pelo painel administrativo",
-                              emailNotificacao: rota.emailNotificacao || undefined,
+                              todos_presentes: todosPresentesMap[rota.id] || "NÃO",
                             })
-                          }
+                          }}
                           className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold"
                           disabled={confirmarRotaMutation.isPending}
                         >

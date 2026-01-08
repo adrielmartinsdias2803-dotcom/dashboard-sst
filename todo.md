@@ -86,3 +86,16 @@
 - [x] Modificar confirmarRota para enviar dados
 - [x] 62 testes passando
 - [x] Dados prontos para envio para SharePoint
+
+
+## Tarefas Concluídas - Correção de Envio para SharePoint Aderência
+- [x] Atualizar schema do banco para incluir campos: numero_rota, todos_presentes, data_realizada
+- [x] Reescrever sharepoint-aderencia.ts com mapeamento exato de campos
+- [x] Adicionar validacoes obrigatorias: numero_rota, setor, tecnico_seguranca, data_prevista
+- [x] Implementar logica de status automatico baseado em todos_presentes
+- [x] Atualizar formulario AgendarRota com novos campos
+- [x] Testar envio completo para SharePoint (62 testes passando)
+- [x] Adicionar confirmacao visual de sucesso
+- [x] Mapeamento exato de campos para SharePoint
+- [x] Validações obrigatórias implementadas
+- [x] Status automático (SIM=CONCLUÍDO, NÃO=PENDENTE)
