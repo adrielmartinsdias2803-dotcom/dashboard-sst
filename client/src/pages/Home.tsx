@@ -205,9 +205,9 @@ export default function Home() {
               <button
                 onClick={() => window.location.href = '/admin/dashboard'}
                 className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-red-700 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:bg-red-800 cursor-pointer"
-                title="Acessar Painel Administrativo Privado"
+                title="Acessar Painel de Segurança do Trabalho"
               >
-                🔐 Admin (Privado)
+                🔐 Segurança do Trabalho
               </button>
               <button
                 onClick={() => window.location.href = '/painel-rotas'}

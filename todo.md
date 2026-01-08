@@ -26,6 +26,8 @@
 - [x] Implementar histórico de rotas realizadas
 - [x] Adicionar filtros e busca no histórico
 - [x] Criar testes unitários para admin dashboard (28 testes)
+- [x] Renomear painel para Seguranca do Trabalho
+- [x] Adicionar botao Voltar funcional
 - [x] Salvar checkpoint final
 
 ## Funcionalidades Futuras

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,11 +11,11 @@ import {
   Clock, 
   AlertCircle, 
   ChevronRight,
-  LogOut,
+  ArrowLeft,
   Settings,
   BarChart3,
   Calendar
-} from "lucide-react";
+} from "lucide-react"
 import { toast } from "sonner";
 
 interface RotaAgendada {
@@ -36,6 +37,7 @@ interface RotaAgendada {
 }
 
 export default function AdminDashboard() {
+  const [, setLocation] = useLocation();
   const [rotas, setRotas] = useState<RotaAgendada[]>([]);
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [notificacoes, setNotificacoes] = useState<number>(0);
@@ -117,7 +119,7 @@ export default function AdminDashboard() {
               <img src="/images/mococa-logo.png" alt="Mococa" className="h-16 md:h-20 relative" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-display font-bold tracking-tight">PAINEL ADMINISTRATIVO</h1>
+              <h1 className="text-3xl md:text-4xl font-display font-bold tracking-tight">SEGURANÇA DO TRABALHO</h1>
               <p className="text-blue-100 text-sm md:text-base mt-1 font-light">Gestão de Rotas de Segurança</p>
             </div>
           </div>
@@ -131,9 +133,12 @@ export default function AdminDashboard() {
                 </span>
               )}
             </div>
-            <Button variant="outline" className="text-white border-white hover:bg-white/20">
-              <LogOut className="h-4 w-4 mr-2" />
-              Sair
+            <Button 
+              onClick={() => setLocation('/')}
+              className="bg-white/20 text-white border-white hover:bg-white/30 border"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Voltar
             </Button>
           </div>
         </div>
