@@ -75,3 +75,14 @@
 - [x] Template com todas as informacoes da rota
 - [x] 62 testes passando
 - [x] Email enviado automaticamente ao confirmar
+
+
+## Tarefas Concluídas - Integração com SharePoint Aderência
+- [x] Remover sistema de email do código
+- [x] Criar arquivo sharepoint-aderencia.ts
+- [x] Implementar funcao enviarDadosAderenciaSharePoint
+- [x] Integrar envio de dados ao confirmar rota
+- [x] Adicionar import no routers.ts
+- [x] Modificar confirmarRota para enviar dados
+- [x] 62 testes passando
+- [x] Dados prontos para envio para SharePoint

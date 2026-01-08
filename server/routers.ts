@@ -1,5 +1,5 @@
-import { getSessionCookieOptions } from "./_core/cookies";
 import { COOKIE_NAME } from "@shared/const";
+import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { getSSTMetrics } from "./db-sst";
@@ -7,19 +7,16 @@ import { getDb } from "./db";
 import { rotasAgendadas } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { z } from "zod";
-import { sendRotaConfirmacao } from "./email-rotas";
+import { enviarDadosAderenciaSharePoint } from "./sharepoint-aderencia";
 
 export const appRouter = router({
-    // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
-      return {
-        success: true,
-      } as const;
+      return { success: true } as const;
     }),
   }),
 
@@ -43,16 +40,11 @@ export const appRouter = router({
       try {
         const metrics = await getSSTMetrics();
         if (!metrics) {
-          return {
-            lastSync: 'Janeiro 8, 2026 às 19:27',
-            status: 'idle'
-          };
+          return { lastSync: 'Janeiro 8, 2026 às 19:27', status: 'idle' };
         }
-        
         const lastSyncTime = new Date(metrics.lastSyncedAt);
         const now = new Date();
         const diffMinutes = Math.floor((now.getTime() - lastSyncTime.getTime()) / (1000 * 60));
-        
         let lastSyncText = '';
         if (diffMinutes < 1) {
           lastSyncText = 'Agora';
@@ -62,25 +54,15 @@ export const appRouter = router({
           const hours = Math.floor(diffMinutes / 60);
           lastSyncText = `Há ${hours}h`;
         }
-        
-        return {
-          lastSync: lastSyncText,
-          status: 'success'
-        };
+        return { lastSync: lastSyncText, status: 'success' };
       } catch (error) {
-        return {
-          lastSync: 'Erro ao carregar',
-          status: 'error'
-        };
+        return { lastSync: 'Erro ao carregar', status: 'error' };
       }
     }),
     forceSyncNow: publicProcedure.mutation(async () => {
       try {
         console.log("[API] Forcing manual sync...");
-        
-        // Trigger manual sync
         const metrics = await getSSTMetrics();
-        
         return {
           success: true,
           message: "Sincronização iniciada com sucesso",
@@ -106,14 +88,13 @@ export const appRouter = router({
       .query(async ({ input }: any) => {
         const db = await getDb();
         if (!db) throw new Error("Database not available");
-        
         let query: any = db.select().from(rotasAgendadas);
-        
         if (input.status) {
           query = query.where(eq(rotasAgendadas.status, input.status));
         }
-        
-        const result = await query.orderBy(desc(rotasAgendadas.createdAt)).limit(input.limit || 100);
+        query = query.orderBy(desc(rotasAgendadas.createdAt));
+        query = query.limit(input.limit || 100);
+        const result = await query;
         return result;
       }),
 
@@ -143,30 +124,27 @@ export const appRouter = router({
         id: z.number(),
         responsavelConfirmacao: z.string(),
         observacoesConfirmacao: z.string().optional(),
-        emailNotificacao: z.string().optional(),
       }))
       .mutation(async ({ input }: any) => {
         const db = await getDb();
         if (!db) throw new Error("Database not available");
         
-        // Buscar rota para obter dados
         const rotas = await db.select().from(rotasAgendadas).where(eq(rotasAgendadas.id, input.id));
         const rota = rotas[0];
+        const dataConfirmacao = new Date();
         
-        // Atualizar rota
         const result = await db.update(rotasAgendadas)
           .set({
             status: "confirmada",
             responsavelConfirmacao: input.responsavelConfirmacao,
             observacoesConfirmacao: input.observacoesConfirmacao,
-            dataConfirmacao: new Date(),
+            dataConfirmacao: dataConfirmacao,
           })
           .where(eq(rotasAgendadas.id, input.id));
         
-        // Enviar email se houver email de notificacao
-        if (input.emailNotificacao && rota) {
+        if (rota) {
           try {
-            await sendRotaConfirmacao(input.emailNotificacao, {
+            await enviarDadosAderenciaSharePoint({
               dataRota: rota.dataRota,
               horaRota: rota.horaRota,
               setor: rota.setor,
@@ -176,9 +154,10 @@ export const appRouter = router({
               convidados: rota.convidados || undefined,
               observacoes: rota.observacoes || undefined,
               responsavelConfirmacao: input.responsavelConfirmacao,
+              dataConfirmacao: dataConfirmacao,
             });
           } catch (error) {
-            console.error("[API] Erro ao enviar email de confirmacao:", error);
+            console.error("[API] Erro ao enviar dados para SharePoint:", error);
           }
         }
         
