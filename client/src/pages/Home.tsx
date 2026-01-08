@@ -166,7 +166,7 @@ export default function Home() {
             <p className="text-slate-600 text-sm mt-1">Acesse ferramentas essenciais de gestão</p>
           </div>
           <div className="p-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <Button 
                 onClick={handleForceSync}
                 disabled={isSyncing}
@@ -203,7 +203,17 @@ export default function Home() {
                 Dashboard PowerBI
               </button>
               <button
-                onClick={() => window.open('https://mococa.sharepoint.com/:x:/s/msteams_6115f4_553804/IQAC1WtO39XDR6XhDrcEMBqNAaEW-EuEv7JV7Io_fYzQaxs?email=sandy.nascimento%40mococa.com.br&e=BlyQSz', '_blank')}
+                onClick={() => window.location.href = '/painel-rotas'}
+                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-slate-700 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:bg-slate-800 cursor-pointer"
+                title="Acessar Painel de Controle de Rotas"
+              >
+                📋 Painel de Rotas
+              </button>
+              <button
+                onClick={() => {
+                  const url = 'https://mococa.sharepoint.com/:x:/s/msteams_6115f4_553804/IQAC1WtO39XDR6XhDrcEMBqNAaEW-EuEv7JV7Io_fYzQaxs?email=sandy.nascimento%40mococa.com.br&e=BlyQSz';
+                  window.open(url, '_blank');
+                }}
                 className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-yellow-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:bg-yellow-600 cursor-pointer"
                 title="Acessar Planilha Condição de Risco"
               >

@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import SyncStatus from "./pages/SyncStatus";
 import AgendarRota from "./pages/AgendarRota";
+import PainelRotas from "./pages/PainelRotas";
 
 function Router() {
   return (
@@ -14,6 +15,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/sync-status" component={SyncStatus} />
       <Route path="/agendar-rota" component={AgendarRota} />
+      <Route path="/painel-rotas" component={PainelRotas} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
