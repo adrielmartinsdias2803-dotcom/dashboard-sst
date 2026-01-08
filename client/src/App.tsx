@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import SyncStatus from "./pages/SyncStatus";
 import AgendarRota from "./pages/AgendarRota";
 import PainelRotas from "./pages/PainelRotas";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function Router() {
   return (
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/sync-status" component={SyncStatus} />
       <Route path="/agendar-rota" component={AgendarRota} />
       <Route path="/painel-rotas" component={PainelRotas} />
+      <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

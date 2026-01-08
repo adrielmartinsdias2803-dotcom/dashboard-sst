@@ -1,0 +1,36 @@
+# Dashboard SST - TODO
+
+## Implementações Concluídas
+- [x] Site profissional com logo Mococa e cores azul/amarela
+- [x] Análise de 737 registros de riscos da planilha SST
+- [x] Backend com Node.js, MySQL e tRPC
+- [x] Sincronização automática com SharePoint
+- [x] Sistema de alertas por email
+- [x] Página de status de sincronização
+- [x] Botão de sincronização manual
+- [x] Seção educativa sobre classificação de riscos
+- [x] Gráfico de tendência mensal
+- [x] Processo de Rotas de Segurança (5 fluxos)
+- [x] Tabela rotas_agendadas no banco de dados
+- [x] 7 endpoints tRPC para CRUD de rotas
+- [x] Página Painel de Rotas (/painel-rotas)
+- [x] Botão de acesso ao Painel nas Ações Rápidas
+- [x] 24 testes unitários para rotas
+
+## Tarefas Concluídas - Painel Administrativo Privado
+- [x] Criar página Dashboard Administrativo (/admin/dashboard)
+- [x] Implementar autenticação e controle de acesso (admin only)
+- [x] Criar sistema de notificações em tempo real
+- [x] Implementar confirmação/rejeição de agendamentos
+- [x] Criar formulário de conclusão de rotas
+- [x] Implementar histórico de rotas realizadas
+- [x] Adicionar filtros e busca no histórico
+- [x] Criar testes unitários para admin dashboard (28 testes)
+- [x] Salvar checkpoint final
+
+## Funcionalidades Futuras
+- [ ] Notificações por email automáticas
+- [ ] Relatório PDF de rotas realizadas
+- [ ] Dashboard de métricas e KPIs
+- [ ] Integração com calendário
+- [ ] Assinatura digital de conclusão

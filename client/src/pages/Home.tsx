@@ -166,7 +166,7 @@ export default function Home() {
             <p className="text-slate-600 text-sm mt-1">Acesse ferramentas essenciais de gestão</p>
           </div>
           <div className="p-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
               <Button 
                 onClick={handleForceSync}
                 disabled={isSyncing}
@@ -201,6 +201,13 @@ export default function Home() {
                   <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
                 </svg>
                 Dashboard PowerBI
+              </button>
+              <button
+                onClick={() => window.location.href = '/admin/dashboard'}
+                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-red-700 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:bg-red-800 cursor-pointer"
+                title="Acessar Painel Administrativo Privado"
+              >
+                🔐 Admin (Privado)
               </button>
               <button
                 onClick={() => window.location.href = '/painel-rotas'}
