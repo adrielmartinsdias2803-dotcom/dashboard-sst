@@ -15,7 +15,8 @@ import {
   Loader2,
   RefreshCw,
   ArrowRight,
-  Flame
+  Flame,
+  FileText
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useEffect, useState } from "react";
@@ -30,6 +31,11 @@ interface SSTMetrics {
   acoesConcluidas: number;
 }
 
+interface SyncStatus {
+  lastSync: string | null;
+  status: 'idle' | 'syncing' | 'success' | 'error';
+}
+
 export default function Home() {
   const [metrics, setMetrics] = useState<SSTMetrics>({
     totalRiscos: 737,
@@ -40,6 +46,23 @@ export default function Home() {
   });
   const [loading, setLoading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>({
+    lastSync: 'Carregando...',
+    status: 'idle'
+  });
+
+  const { data: syncData } = trpc.sst.getSyncStatus.useQuery(undefined, {
+    refetchInterval: 60000, // Refetch every minute
+  });
+
+  useEffect(() => {
+    if (syncData) {
+      setSyncStatus({
+        lastSync: syncData.lastSync,
+        status: syncData.status as 'idle' | 'syncing' | 'success' | 'error'
+      });
+    }
+  }, [syncData]);
 
   // Dados de tendência mensal (últimos 6 meses)
   const trendData = [
@@ -56,6 +79,10 @@ export default function Home() {
       setIsSyncing(false);
       if (data.success) {
         toast.success("Sincronização iniciada com sucesso!");
+        // Refetch sync status
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
         toast.error(data.message);
       }
@@ -68,7 +95,15 @@ export default function Home() {
 
   const handleForceSync = async () => {
     setIsSyncing(true);
-    await forceSyncMutation.mutateAsync();
+    try {
+      await forceSyncMutation.mutateAsync();
+    } catch (error) {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleAgendarRota = () => {
+    window.location.href = '/agendar-rota';
   };
 
   const handlePowerBIAccess = () => {
@@ -104,8 +139,16 @@ export default function Home() {
             </div>
           </div>
           <div className="text-right hidden md:block">
-            <p className="text-blue-100 text-sm font-light">Análise Completa</p>
-            <p className="font-display text-2xl font-bold mt-1">Janeiro 2026</p>
+            <p className="text-blue-100 text-sm font-light">Última Sincronização</p>
+            <div className="flex items-center justify-end gap-2 mt-2">
+              <div className={`w-2 h-2 rounded-full ${
+                syncStatus.status === 'success' ? 'bg-green-400 animate-pulse' :
+                syncStatus.status === 'syncing' ? 'bg-yellow-400 animate-pulse' :
+                syncStatus.status === 'error' ? 'bg-red-400' :
+                'bg-gray-400'
+              }`}></div>
+              <p className="font-display text-sm font-semibold">{syncStatus.lastSync || 'Carregando...'}</p>
+            </div>
           </div>
         </div>
       </header>
@@ -141,6 +184,14 @@ export default function Home() {
                   </>
                 )}
               </Button>
+               <button
+                onClick={handleAgendarRota}
+                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:from-amber-600 hover:to-amber-700 cursor-pointer"
+                title="Agendar uma nova rota de segurança"
+              >
+                <Calendar className="h-5 w-5" />
+                Agendar Rota
+              </button>
               <button
                 onClick={handlePowerBIAccess}
                 className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-primary to-blue-700 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:from-primary/90 hover:to-blue-700/90 cursor-pointer"
@@ -151,18 +202,14 @@ export default function Home() {
                 </svg>
                 Dashboard PowerBI
               </button>
-              <a 
-                href="https://mococa.sharepoint.com/:x:/s/msteams_6115f4_553804/IQAC1WtO39XDR6XhDrcEMBqNAaEW-EuEv7JV7Io_fYzQaxs?email=sandy.nascimento%40mococa.com.br&e=BlyQSz"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:from-yellow-400/90 hover:to-yellow-500/90"
+              <button
+                onClick={() => window.open('https://mococa.sharepoint.com/:x:/s/msteams_6115f4_553804/IQAC1WtO39XDR6XhDrcEMBqNAaEW-EuEv7JV7Io_fYzQaxs?email=sandy.nascimento%40mococa.com.br&e=BlyQSz', '_blank')}
+                className="inline-flex items-center justify-center gap-3 px-6 py-3 bg-yellow-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 h-14 text-base shadow-lg hover:bg-yellow-600 cursor-pointer"
+                title="Acessar Planilha Condição de Risco"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
-                  <polyline points="14 2 14 8 20 8" />
-                </svg>
+                <FileText className="h-5 w-5" />
                 Planilha Condição de Risco
-              </a>
+              </button>
             </div>
           </div>
         </div>

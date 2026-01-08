@@ -64,3 +64,23 @@ export const alertContacts = mysqlTable("alert_contacts", {
 
 export type AlertContact = typeof alertContacts.$inferSelect;
 export type InsertAlertContact = typeof alertContacts.$inferInsert;
+export const rotasAgendadas = mysqlTable("rotas_agendadas", {
+  id: int("id").autoincrement().primaryKey(),
+  dataRota: varchar("data_rota", { length: 10 }).notNull(),
+  horaRota: varchar("hora_rota", { length: 5 }).notNull(),
+  setor: varchar("setor", { length: 255 }).notNull(),
+  tecnicoSST: varchar("tecnico_sst", { length: 255 }).notNull(),
+  representanteManutenção: varchar("representante_manutencao", { length: 255 }).notNull(),
+  representanteProducao: varchar("representante_producao", { length: 255 }).notNull(),
+  convidados: text("convidados"),
+  observacoes: text("observacoes"),
+  status: mysqlEnum("status", ["pendente", "confirmada", "concluida", "cancelada"]).default("pendente").notNull(),
+  responsavelConfirmacao: varchar("responsavel_confirmacao", { length: 255 }),
+  dataConfirmacao: timestamp("data_confirmacao"),
+  observacoesConfirmacao: text("observacoes_confirmacao"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type RotaAgendada = typeof rotasAgendadas.$inferSelect;
+export type InsertRotaAgendada = typeof rotasAgendadas.$inferInsert;
