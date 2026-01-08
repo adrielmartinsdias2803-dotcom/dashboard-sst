@@ -32,11 +32,6 @@
 - [x] Conectar formulario com tRPC para salvar dados
 - [x] Remover envio automatico de email
 - [x] Adicionar campo de email manual
-- [x] Reformatar Home com layout profissional
-- [x] Melhorar espaçamento e alinhamento de botoes
-- [x] Ajustar responsividade para todos os tamanhos
-- [x] Adicionar cards de resumo executivo
-- [x] Todos os 62 testes passando
 - [x] Salvar checkpoint final
 
 ## Funcionalidades Futuras
