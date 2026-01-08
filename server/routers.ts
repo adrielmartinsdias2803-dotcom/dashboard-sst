@@ -1,5 +1,5 @@
-import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
+import { COOKIE_NAME } from "@shared/const";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { getSSTMetrics } from "./db-sst";
@@ -7,6 +7,7 @@ import { getDb } from "./db";
 import { rotasAgendadas } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { z } from "zod";
+import { sendRotaConfirmacao } from "./email-rotas";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -98,31 +99,22 @@ export const appRouter = router({
   }),
   rotas: router({
     listRotas: publicProcedure
-      .input(z.object({ 
+      .input(z.object({
         status: z.enum(["pendente", "confirmada", "concluida", "cancelada"]).optional(),
-        limit: z.number().default(50),
-        offset: z.number().default(0),
-      }).optional())
+        limit: z.number().optional(),
+      }))
       .query(async ({ input }: any) => {
         const db = await getDb();
         if (!db) throw new Error("Database not available");
         
-        if (input?.status) {
-          const rotas = await db.select().from(rotasAgendadas).where(eq(rotasAgendadas.status, input.status)).orderBy(desc(rotasAgendadas.createdAt)).limit(input?.limit || 50).offset(input?.offset || 0);
-          return rotas;
+        let query: any = db.select().from(rotasAgendadas);
+        
+        if (input.status) {
+          query = query.where(eq(rotasAgendadas.status, input.status));
         }
         
-        const rotas = await db.select().from(rotasAgendadas).orderBy(desc(rotasAgendadas.createdAt)).limit(input?.limit || 50).offset(input?.offset || 0);
-        return rotas;
-      }),
-
-    getRotaById: publicProcedure
-      .input(z.number())
-      .query(async ({ input }: any) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        const rota = await db.select().from(rotasAgendadas).where(eq(rotasAgendadas.id, input)).limit(1);
-        return rota[0] || null;
+        const result = await query.orderBy(desc(rotasAgendadas.createdAt)).limit(input.limit || 100);
+        return result;
       }),
 
     createRota: publicProcedure
@@ -151,10 +143,17 @@ export const appRouter = router({
         id: z.number(),
         responsavelConfirmacao: z.string(),
         observacoesConfirmacao: z.string().optional(),
+        emailNotificacao: z.string().optional(),
       }))
       .mutation(async ({ input }: any) => {
         const db = await getDb();
         if (!db) throw new Error("Database not available");
+        
+        // Buscar rota para obter dados
+        const rotas = await db.select().from(rotasAgendadas).where(eq(rotasAgendadas.id, input.id));
+        const rota = rotas[0];
+        
+        // Atualizar rota
         const result = await db.update(rotasAgendadas)
           .set({
             status: "confirmada",
@@ -163,6 +162,26 @@ export const appRouter = router({
             dataConfirmacao: new Date(),
           })
           .where(eq(rotasAgendadas.id, input.id));
+        
+        // Enviar email se houver email de notificacao
+        if (input.emailNotificacao && rota) {
+          try {
+            await sendRotaConfirmacao(input.emailNotificacao, {
+              dataRota: rota.dataRota,
+              horaRota: rota.horaRota,
+              setor: rota.setor,
+              tecnicoSST: rota.tecnicoSST,
+              representanteManutenção: rota.representanteManutenção,
+              representanteProducao: rota.representanteProducao,
+              convidados: rota.convidados || undefined,
+              observacoes: rota.observacoes || undefined,
+              responsavelConfirmacao: input.responsavelConfirmacao,
+            });
+          } catch (error) {
+            console.error("[API] Erro ao enviar email de confirmacao:", error);
+          }
+        }
+        
         return result;
       }),
 
@@ -201,24 +220,5 @@ export const appRouter = router({
           .where(eq(rotasAgendadas.id, input.id));
         return result;
       }),
-
-    getEstatisticas: publicProcedure
-      .query(async () => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        const rotas = await db.select().from(rotasAgendadas);
-        
-        const stats = {
-          total: rotas.length,
-          pendentes: rotas.filter((r: any) => r.status === "pendente").length,
-          confirmadas: rotas.filter((r: any) => r.status === "confirmada").length,
-          concluidas: rotas.filter((r: any) => r.status === "concluida").length,
-          canceladas: rotas.filter((r: any) => r.status === "cancelada").length,
-        };
-        
-        return stats;
-      }),
   }),
 });
-
-export type AppRouter = typeof appRouter;

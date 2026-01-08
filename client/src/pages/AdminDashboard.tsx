@@ -324,6 +324,7 @@ export default function AdminDashboard() {
                               id: rota.id,
                               responsavelConfirmacao: "Administrador",
                               observacoesConfirmacao: "Confirmado pelo painel administrativo",
+                              emailNotificacao: rota.emailNotificacao || undefined,
                             })
                           }
                           className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold"
