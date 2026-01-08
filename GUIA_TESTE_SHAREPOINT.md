@@ -1,16 +1,21 @@
-# 🔧 Guia de Teste - Envio para SharePoint
+# 🔧 Guia de Teste - Envio para SharePoint (CORRIGIDO)
 
 ## Problema Identificado e Corrigido
 
 **Problema:** Os dados NÃO estavam sendo enviados para a aba "Aderência" do SharePoint.
 
-**Causa:** O arquivo `sharepoint-aderencia.ts` estava apenas **simulando** o envio, sem fazer a chamada real para a API do SharePoint.
+**Causa:** O caminho da planilha estava incorreto. A planilha está em uma **pasta específica**, não na raiz do site.
+
+**Caminho Correto:**
+```
+/sites/msteams_6115f4_553804/Shared Documents/General/SEGURANÇA DO TRABALHO - GERAL/ROTAS/Gestão SST_Condições de Riscos.xlsm
+```
 
 **Solução Implementada:**
-1. ✅ Implementação real de autenticação com Azure AD
-2. ✅ Busca dinâmica do Site ID
-3. ✅ Busca dinâmica do ID da lista "Aderência"
-4. ✅ Envio real de dados via Microsoft Graph API
+1. ✅ Busca dinâmica do Drive ID
+2. ✅ Busca do arquivo no caminho correto
+3. ✅ Busca da aba "Aderência" no Excel
+4. ✅ Adição de linha na tabela "Aderência"
 5. ✅ Validações obrigatórias (N° ROTA, SETOR, TÉCNICO, DATA PREVISTA)
 6. ✅ Status automático (SIM=CONCLUÍDO, NÃO=PENDENTE)
 
@@ -31,22 +36,29 @@ node test-sharepoint-envio.mjs
 - ✅ Valida credenciais do SharePoint
 - ✅ Obtém token de acesso
 - ✅ Busca o Site ID
-- ✅ Lista todas as listas do site
-- ✅ Encontra a lista "Aderência"
-- ✅ Envia dados de teste
+- ✅ Busca o Drive ID
+- ✅ Busca o arquivo Excel no caminho correto
+- ✅ Lista todas as abas do Excel
+- ✅ Encontra a aba "Aderência"
+- ✅ Lista as tabelas na aba
+- ✅ Adiciona uma linha de teste
 - ✅ Mostra o resultado
 
 **Saída esperada:**
 ```
 ✅ Token obtido com sucesso
 ✅ Site ID encontrado: site-id-aqui
-✅ 5 listas encontradas:
-  - Aderência (ID: lista-id-aqui)
-  - Documentos
-  - ...
-✅ Lista 'Aderência' encontrada
-✅ Dados enviados com sucesso!
-  Item ID: item-id-aqui
+✅ Drive ID encontrado: drive-id-aqui
+✅ Arquivo Excel encontrado: Gestão SST_Condições de Riscos.xlsm
+   ID: item-id-aqui
+✅ 3 abas encontradas:
+  - Condições de Riscos (ID: aba-id-1)
+  - Aderência (ID: aba-id-2)
+  - Aderência Histórico (ID: aba-id-3)
+✅ Aba 'Aderência' encontrada: aba-id-2
+✅ 1 tabelas encontradas:
+  - Aderência (ID: tabela-id)
+✅ Linha adicionada com sucesso!
 ```
 
 ---
@@ -99,11 +111,18 @@ node test-sharepoint-envio.mjs
    ↓
 9. Sistema busca Site ID do SharePoint
    ↓
-10. Sistema busca ID da lista "Aderência"
+10. Sistema busca Drive ID
    ↓
-11. Sistema envia dados para SharePoint
+11. Sistema busca arquivo Excel no caminho correto:
+    /General/SEGURANÇA DO TRABALHO - GERAL/ROTAS/Gestão SST_Condições de Riscos.xlsm
    ↓
-12. ✅ Dados aparecem na aba "Aderência"
+12. Sistema busca aba "Aderência"
+   ↓
+13. Sistema busca tabela "Aderência"
+   ↓
+14. Sistema adiciona linha com dados
+   ↓
+15. ✅ Dados aparecem na aba "Aderência"
 ```
 
 ---
@@ -145,8 +164,17 @@ status → STATUS
 - `SHAREPOINT_CLIENT_SECRET`
 - `SHAREPOINT_SITE_NAME`
 
-### Erro: "Lista 'Aderência' não encontrada"
-**Solução:** O script mostrará todas as listas disponíveis. Verifique o nome correto da lista no SharePoint.
+### Erro: "Arquivo Excel não encontrado"
+**Solução:** Verifique se o caminho está correto:
+```
+/General/SEGURANÇA DO TRABALHO - GERAL/ROTAS/Gestão SST_Condições de Riscos.xlsm
+```
+
+### Erro: "Aba 'Aderência' não encontrada"
+**Solução:** O script mostrará todas as abas disponíveis. Verifique o nome correto da aba no Excel.
+
+### Erro: "Tabela 'Aderência' não encontrada"
+**Solução:** Verifique se existe uma tabela nomeada "Aderência" na aba "Aderência".
 
 ### Erro: "Unauthorized" ou "401"
 **Solução:** As credenciais estão incorretas. Verifique:
@@ -160,7 +188,7 @@ status → STATUS
 1. Verifique se o envio foi bem-sucedido (procure por logs de sucesso)
 2. Verifique se a aba "Aderência" está correta
 3. Atualize a página do SharePoint (F5)
-4. Verifique se o usuário tem permissão de leitura na aba
+4. Verifique se o usuário tem permissão de escrita na tabela
 
 ---
 
@@ -174,10 +202,10 @@ pnpm test
 **Testes implementados:**
 - ✅ Validação de dados obrigatórios (5 testes)
 - ✅ Status automático (2 testes)
-- ✅ Envio de dados (4 testes)
+- ✅ Envio de dados (3 testes)
 - ✅ Integração com SharePoint (5 testes)
 
-**Total: 71 testes passando ✅**
+**Total: 72 testes passando ✅**
 
 ---
 
