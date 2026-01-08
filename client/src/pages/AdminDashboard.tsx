@@ -47,6 +47,56 @@ export default function AdminDashboard() {
   const [passwordInput, setPasswordInput] = useState("");
   const [showPasswordError, setShowPasswordError] = useState(false);
 
+  // Mover hooks para FORA da condição de autenticação
+  const listRotasQuery = trpc.rotas.listRotas.useQuery(
+    {
+      status: "pendente",
+      limit: 100,
+    },
+    {
+      enabled: isAuthenticated, // Só executa quando autenticado
+    }
+  );
+
+  const confirmarRotaMutation = trpc.rotas.confirmarRota.useMutation({
+    onSuccess: () => {
+      toast.success("✅ Rota confirmada! Equipe notificada.");
+      listRotasQuery.refetch();
+      setNotificacoes(Math.max(0, notificacoes - 1));
+    },
+    onError: (error) => {
+      toast.error(`❌ Erro: ${error.message}`);
+    },
+  });
+
+  const rejeitarRotaMutation = trpc.rotas.cancelarRota.useMutation({
+    onSuccess: () => {
+      toast.success("⛔ Rota rejeitada.");
+      listRotasQuery.refetch();
+      setNotificacoes(Math.max(0, notificacoes - 1));
+    },
+    onError: (error) => {
+      toast.error(`❌ Erro: ${error.message}`);
+    },
+  });
+
+  const concluirRotaMutation = trpc.rotas.concluirRota.useMutation({
+    onSuccess: () => {
+      toast.success("🎉 Rota concluída com sucesso!");
+      listRotasQuery.refetch();
+    },
+    onError: (error) => {
+      toast.error(`❌ Erro: ${error.message}`);
+    },
+  });
+
+  useEffect(() => {
+    if (listRotasQuery.data) {
+      setRotas(listRotasQuery.data as RotaAgendada[]);
+      setNotificacoes((listRotasQuery.data as RotaAgendada[]).length);
+    }
+  }, [listRotasQuery.data]);
+
   const handlePasswordSubmit = () => {
     if (passwordInput === "2026") {
       setIsAuthenticated(true);
@@ -57,6 +107,22 @@ export default function AdminDashboard() {
       toast.error("❌ Senha incorreta!");
       setPasswordInput("");
     }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const statusMap: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
+      pendente: { label: "Pendente", color: "bg-yellow-100 text-yellow-800", icon: <Clock className="h-4 w-4" /> },
+      confirmada: { label: "Confirmada", color: "bg-blue-100 text-blue-800", icon: <CheckCircle className="h-4 w-4" /> },
+      concluida: { label: "Concluída", color: "bg-green-100 text-green-800", icon: <CheckCircle className="h-4 w-4" /> },
+      cancelada: { label: "Rejeitada", color: "bg-red-100 text-red-800", icon: <XCircle className="h-4 w-4" /> },
+    };
+    const config = statusMap[status];
+    return (
+      <Badge className={`${config.color} flex items-center gap-1`}>
+        {config.icon}
+        {config.label}
+      </Badge>
+    );
   };
 
   // Se não estiver autenticado, mostrar tela de senha
@@ -107,66 +173,6 @@ export default function AdminDashboard() {
       </div>
     );
   }
-
-  const listRotasQuery = trpc.rotas.listRotas.useQuery({
-    status: "pendente",
-    limit: 100,
-  });
-
-  const confirmarRotaMutation = trpc.rotas.confirmarRota.useMutation({
-    onSuccess: () => {
-      toast.success("✅ Rota confirmada! Equipe notificada.");
-      listRotasQuery.refetch();
-      setNotificacoes(Math.max(0, notificacoes - 1));
-    },
-    onError: (error) => {
-      toast.error(`❌ Erro: ${error.message}`);
-    },
-  });
-
-  const rejeitarRotaMutation = trpc.rotas.cancelarRota.useMutation({
-    onSuccess: () => {
-      toast.success("⛔ Rota rejeitada.");
-      listRotasQuery.refetch();
-      setNotificacoes(Math.max(0, notificacoes - 1));
-    },
-    onError: (error) => {
-      toast.error(`❌ Erro: ${error.message}`);
-    },
-  });
-
-  const concluirRotaMutation = trpc.rotas.concluirRota.useMutation({
-    onSuccess: () => {
-      toast.success("🎉 Rota concluída com sucesso!");
-      listRotasQuery.refetch();
-    },
-    onError: (error) => {
-      toast.error(`❌ Erro: ${error.message}`);
-    },
-  });
-
-  useEffect(() => {
-    if (listRotasQuery.data) {
-      setRotas(listRotasQuery.data as RotaAgendada[]);
-      setNotificacoes((listRotasQuery.data as RotaAgendada[]).length);
-    }
-  }, [listRotasQuery.data]);
-
-  const getStatusBadge = (status: string) => {
-    const statusMap: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-      pendente: { label: "Pendente", color: "bg-yellow-100 text-yellow-800", icon: <Clock className="h-4 w-4" /> },
-      confirmada: { label: "Confirmada", color: "bg-blue-100 text-blue-800", icon: <CheckCircle className="h-4 w-4" /> },
-      concluida: { label: "Concluída", color: "bg-green-100 text-green-800", icon: <CheckCircle className="h-4 w-4" /> },
-      cancelada: { label: "Rejeitada", color: "bg-red-100 text-red-800", icon: <XCircle className="h-4 w-4" /> },
-    };
-    const config = statusMap[status];
-    return (
-      <Badge className={`${config.color} flex items-center gap-1`}>
-        {config.icon}
-        {config.label}
-      </Badge>
-    );
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">

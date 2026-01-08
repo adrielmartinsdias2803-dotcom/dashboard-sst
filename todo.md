@@ -56,3 +56,11 @@
 - [x] Adicionar import do useState que estava faltando
 - [x] Validação de senha funcionando corretamente
 - [x] Tela de login elegante e profissional
+
+## Tarefas Concluídas - Correção de Hooks React
+- [x] Debugar erro de hooks sendo chamados condicionalmente
+- [x] Mover useQuery para fora da condicao de autenticacao
+- [x] Mover useMutation para fora da condicao de autenticacao
+- [x] Adicionar enabled: isAuthenticated para controlar execucao
+- [x] Validar que 62 testes passam
+- [x] Zero erros de compilacao
