@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle, Clock, AlertCircle, ChevronRight } from "lucide-react";
+import { CheckCircle, XCircle, Clock, AlertCircle, ChevronRight, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
 interface RotaAgendada {
@@ -25,6 +26,7 @@ interface RotaAgendada {
 }
 
 export default function PainelRotas() {
+  const [, setLocation] = useLocation();
   const [rotas, setRotas] = useState<RotaAgendada[]>([]);
   const [filtroStatus, setFiltroStatus] = useState<string>("pendente");
   const [loading, setLoading] = useState(false);
@@ -100,6 +102,13 @@ export default function PainelRotas() {
                 <p className="text-blue-100">Gerenciar agendamentos de Segurança do Trabalho</p>
               </div>
             </div>
+            <Button 
+              onClick={() => setLocation('/')}
+              className="bg-white/20 text-white border-white hover:bg-white/30 border"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Voltar
+            </Button>
           </div>
         </div>
       </div>

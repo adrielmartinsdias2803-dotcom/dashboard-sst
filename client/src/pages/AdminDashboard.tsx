@@ -14,7 +14,8 @@ import {
   ArrowLeft,
   Settings,
   BarChart3,
-  Calendar
+  Calendar,
+  Lock
 } from "lucide-react"
 import { toast } from "sonner";
 
@@ -42,6 +43,70 @@ export default function AdminDashboard() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [notificacoes, setNotificacoes] = useState<number>(0);
   const [tab, setTab] = useState<"notificacoes" | "historico">("notificacoes");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [showPasswordError, setShowPasswordError] = useState(false);
+
+  const handlePasswordSubmit = () => {
+    if (passwordInput === "2026") {
+      setIsAuthenticated(true);
+      setShowPasswordError(false);
+      toast.success("✅ Acesso concedido!");
+    } else {
+      setShowPasswordError(true);
+      toast.error("❌ Senha incorreta!");
+      setPasswordInput("");
+    }
+  };
+
+  // Se não estiver autenticado, mostrar tela de senha
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center px-4">
+        <Card className="w-full max-w-md shadow-2xl border-0">
+          <CardHeader className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-t-lg">
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <Lock className="h-6 w-6" />
+              Segurança do Trabalho
+            </CardTitle>
+            <CardDescription className="text-red-100 text-base">Acesso Restrito - Digite a Senha</CardDescription>
+          </CardHeader>
+          <CardContent className="p-8">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Senha de Acesso</label>
+                <input
+                  type="password"
+                  value={passwordInput}
+                  onChange={(e) => {
+                    setPasswordInput(e.target.value);
+                    setShowPasswordError(false);
+                  }}
+                  onKeyPress={(e) => e.key === "Enter" && handlePasswordSubmit()}
+                  placeholder="Digite a senha"
+                  className={`w-full px-4 py-3 border-2 rounded-lg font-semibold text-center text-lg tracking-widest transition-all ${
+                    showPasswordError 
+                      ? "border-red-500 bg-red-50" 
+                      : "border-slate-300 focus:border-red-600 focus:ring-2 focus:ring-red-200"
+                  }`}
+                  autoFocus
+                />
+                {showPasswordError && (
+                  <p className="text-red-600 text-sm mt-2 font-semibold">Senha incorreta. Tente novamente.</p>
+                )}
+              </div>
+              <Button
+                onClick={handlePasswordSubmit}
+                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 rounded-lg transition-all duration-300"
+              >
+                Acessar Painel
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const listRotasQuery = trpc.rotas.listRotas.useQuery({
     status: "pendente",
