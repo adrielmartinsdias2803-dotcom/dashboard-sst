@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, date, time, tinyint } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -58,7 +58,7 @@ export const alertContacts = mysqlTable("alert_contacts", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 320 }).notNull().unique(),
   name: varchar("name", { length: 255 }),
-  isActive: int("is_active").default(1).notNull(),
+  isActive: tinyint("is_active").default(1).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -66,8 +66,8 @@ export type AlertContact = typeof alertContacts.$inferSelect;
 export type InsertAlertContact = typeof alertContacts.$inferInsert;
 export const rotasAgendadas = mysqlTable("rotas_agendadas", {
   id: int("id").autoincrement().primaryKey(),
-  dataRota: varchar("data_rota", { length: 10 }).notNull(),
-  horaRota: varchar("hora_rota", { length: 5 }).notNull(),
+  dataRota: date("data_rota").notNull(),
+  horaRota: time("hora_rota").notNull(),
   setor: varchar("setor", { length: 255 }).notNull(),
   tecnicoSST: varchar("tecnico_sst", { length: 255 }).notNull(),
   representanteManutenção: varchar("representante_manutencao", { length: 255 }).notNull(),

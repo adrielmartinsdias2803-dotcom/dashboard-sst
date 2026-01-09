@@ -38,11 +38,12 @@ interface SyncStatus {
 
 export default function Home() {
   const [metrics, setMetrics] = useState<SSTMetrics>({
-    totalRiscos: 0,
-    riscosAltos: 0,
-    riscosMedias: 0,
-    riscosCriticos: 0,
-    acoesConcluidas: 0,
+    // Valores ajustados conforme solicitado
+    totalRiscos: 686,
+    riscosAltos: 262,
+    riscosMedias: 165,
+    riscosCriticos: 3,
+    acoesConcluidas: 301,
   });
   const [loading, setLoading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -62,12 +63,13 @@ export default function Home() {
 
   useEffect(() => {
     if (metricsData) {
+      // Aplicar sobreposição manual dos números solicitados
       setMetrics({
-        totalRiscos: metricsData.totalRiscos || 0,
-        riscosAltos: metricsData.riscosAltos || 0,
-        riscosMedias: metricsData.riscosMedias || 0,
-        riscosCriticos: metricsData.riscosCriticos || 0,
-        acoesConcluidas: metricsData.acoesConcluidas || 0,
+        totalRiscos: 686,
+        riscosAltos: 262,
+        riscosMedias: 165,
+        riscosCriticos: metricsData.riscosCriticos ?? 0,
+        acoesConcluidas: 301,
       });
     }
   }, [metricsData]);
@@ -261,7 +263,7 @@ export default function Home() {
             <CardContent className="p-8">
               <div className="border-l-4 border-yellow-500 pl-6 py-4 bg-gradient-to-r from-yellow-50 to-transparent rounded-r-lg">
                 <p className="text-slate-700 leading-relaxed mb-4">
-                  A análise da planilha de Gestão SST revelou um <span className="font-bold text-primary">panorama crítico que demanda ação imediata</span>. Foram identificados <span className="font-display font-bold text-lg text-primary">737 registros</span> de condições de risco e acidentes, com uma concentração preocupante de <span className="font-bold text-red-600">71,5%</span> classificados como Alto ou Médio risco.
+                  A análise da planilha de Gestão SST revelou um <span className="font-bold text-primary">panorama crítico que demanda ação imediata</span>. Foram identificados <span className="font-display font-bold text-lg text-primary">686 registros</span> de condições de risco e acidentes, com uma concentração preocupante de <span className="font-bold text-red-600">71,5%</span> classificados como Alto ou Médio risco.
                 </p>
                 <p className="text-slate-700 leading-relaxed">
                   Embora o sistema de gestão demonstre maturidade na identificação de riscos, o alto percentual de ações não iniciadas <span className="font-bold text-red-600">(52,9%)</span> e a distribuição desigual de responsabilidades indicam a necessidade urgente de reforço operacional e investimentos estruturais significativos.
