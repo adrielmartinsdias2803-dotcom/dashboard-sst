@@ -8,9 +8,11 @@ import { rotasAgendadas } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { z } from "zod";
 import { enviarDadosAderenciaSharePoint } from "./sharepoint-aderencia";
+import { syncRouter } from "./routers-sync";
 
 export const appRouter = router({
   system: systemRouter,
+  sync: syncRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
