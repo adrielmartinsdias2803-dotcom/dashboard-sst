@@ -275,7 +275,7 @@ export default function AdminDashboard() {
                           <Badge className="bg-yellow-100 text-yellow-800">AGUARDANDO CONFIRMAÇÃO</Badge>
                         </div>
                         <p className="text-sm text-gray-600">
-                          📅 {rota.dataRota} às {rota.horaRota}
+                          📅 {String(rota.dataRota)} às {String(rota.horaRota)}
                         </p>
                       </div>
                       <Button

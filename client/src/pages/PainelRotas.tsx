@@ -157,7 +157,7 @@ export default function PainelRotas() {
                         {getStatusBadge(rota.status)}
                       </div>
                       <p className="text-sm text-gray-600">
-                        📅 {rota.dataRota} às {rota.horaRota}
+                        📅 {String(rota.dataRota)} às {String(rota.horaRota)}
                       </p>
                     </div>
                     <Button
