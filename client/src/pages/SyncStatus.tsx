@@ -32,7 +32,7 @@ export default function SyncStatus() {
 
   // Usar tRPC para forçar sincronização
   const forceSyncMutation = trpc.sst.forceSyncNow.useMutation({
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       setIsSyncing(false);
       if (data.success) {
         toast.success("Sincronização iniciada com sucesso!");
@@ -53,7 +53,7 @@ export default function SyncStatus() {
         toast.error(data.message);
       }
     },
-    onError: (error) => {
+    onError: (error: any) => {
       setIsSyncing(false);
       toast.error("Erro ao sincronizar: " + error.message);
     },

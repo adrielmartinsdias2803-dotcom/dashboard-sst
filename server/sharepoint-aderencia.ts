@@ -1,9 +1,6 @@
 /**
  * Integração com SharePoint - Planilha "Condição de Risco" aba "Aderência"
  * Envia dados de rotas confirmadas com mapeamento exato de campos
- * 
- * Caminho da planilha:
- * /sites/msteams_6115f4_553804/Shared Documents/General/SEGURANÇA DO TRABALHO - GERAL/ROTAS/Gestão SST_Condições de Riscos.xlsm
  */
 
 import axios from "axios";
@@ -89,6 +86,53 @@ async function obterTokenSharePoint(): Promise<string> {
 }
 
 /**
+ * Obter ID da lista "Aderência" no SharePoint
+ */
+async function obterIdListaAderencia(
+  token: string,
+  siteId: string
+): Promise<string> {
+  try {
+    console.log("[SharePoint] Buscando ID da lista Aderência...");
+
+    // Buscar todas as listas do site
+    const response = await axios.get(
+      `https://graph.microsoft.com/v1.0/sites/${siteId}/lists`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        timeout: 10000,
+      }
+    );
+
+    // Procurar pela lista "Aderência"
+    const listaAderencia = response.data.value?.find(
+      (lista: any) => 
+        lista.displayName?.toLowerCase() === "aderência" ||
+        lista.displayName?.toLowerCase() === "aderencia" ||
+        lista.name?.toLowerCase() === "aderência" ||
+        lista.name?.toLowerCase() === "aderencia"
+    );
+
+    if (!listaAderencia) {
+      console.warn("[SharePoint] Lista 'Aderência' não encontrada. Listas disponíveis:");
+      response.data.value?.forEach((lista: any) => {
+        console.log(`  - ${lista.displayName} (${lista.id})`);
+      });
+      throw new Error("Lista 'Aderência' não encontrada no SharePoint");
+    }
+
+    console.log("[SharePoint] ID da lista Aderência:", listaAderencia.id);
+    return listaAderencia.id;
+  } catch (error: any) {
+    console.error("[SharePoint] Erro ao obter ID da lista:", error.message);
+    throw error;
+  }
+}
+
+/**
  * Obter Site ID a partir do nome do site
  */
 async function obterSiteId(
@@ -118,148 +162,22 @@ async function obterSiteId(
 }
 
 /**
- * Obter Drive ID do site
+ * Adicionar item à lista de Aderência no SharePoint
  */
-async function obterDriveId(
+async function adicionarItemAderencia(
   token: string,
-  siteId: string
-): Promise<string> {
-  try {
-    console.log("[SharePoint] Buscando Drive ID...");
-
-    const response = await axios.get(
-      `https://graph.microsoft.com/v1.0/sites/${siteId}/drives`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        timeout: 10000,
-      }
-    );
-
-    if (response.data.value && response.data.value.length > 0) {
-      const driveId = response.data.value[0].id;
-      console.log("[SharePoint] Drive ID obtido:", driveId);
-      return driveId;
-    }
-
-    throw new Error("Nenhum drive encontrado no site");
-  } catch (error: any) {
-    console.error("[SharePoint] Erro ao obter Drive ID:", error.message);
-    throw error;
-  }
-}
-
-/**
- * Obter ID do arquivo Excel na pasta específica
- */
-async function obterIdArquivoExcel(
-  token: string,
-  driveId: string
-): Promise<string> {
-  try {
-    console.log("[SharePoint] Buscando arquivo Excel na pasta específica...");
-
-    // Caminho da pasta: /General/SEGURANÇA DO TRABALHO - GERAL/ROTAS/
-    const caminhoArquivo = "/General/SEGURANÇA DO TRABALHO - GERAL/ROTAS/Gestão SST_Condições de Riscos.xlsm";
-
-    const response = await axios.get(
-      `https://graph.microsoft.com/v1.0/drives/${driveId}/root:${encodeURI(caminhoArquivo)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        timeout: 10000,
-      }
-    );
-
-    console.log("[SharePoint] Arquivo Excel encontrado, ID:", response.data.id);
-    return response.data.id;
-  } catch (error: any) {
-    console.error("[SharePoint] Erro ao obter arquivo Excel:", error.message);
-    throw error;
-  }
-}
-
-/**
- * Obter ID da aba "Aderência" no Excel
- */
-async function obterIdAbaAderencia(
-  token: string,
-  itemId: string
-): Promise<string> {
-  try {
-    console.log("[SharePoint] Buscando aba 'Aderência' no Excel...");
-
-    // Usar Excel API para obter worksheets
-    const response = await axios.get(
-      `https://graph.microsoft.com/v1.0/me/drive/items/${itemId}/workbook/worksheets`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        timeout: 10000,
-      }
-    );
-
-    // Procurar pela aba "Aderência"
-    const abaAderencia = response.data.value?.find(
-      (aba: any) => 
-        aba.name?.toLowerCase() === "aderência" ||
-        aba.name?.toLowerCase() === "aderencia"
-    );
-
-    if (!abaAderencia) {
-      console.warn("[SharePoint] Aba 'Aderência' não encontrada. Abas disponíveis:");
-      response.data.value?.forEach((aba: any) => {
-        console.log(`  - ${aba.name} (${aba.id})`);
-      });
-      throw new Error("Aba 'Aderência' não encontrada no Excel");
-    }
-
-    console.log("[SharePoint] Aba 'Aderência' encontrada, ID:", abaAderencia.id);
-    return abaAderencia.id;
-  } catch (error: any) {
-    console.error("[SharePoint] Erro ao obter aba Aderência:", error.message);
-    throw error;
-  }
-}
-
-/**
- * Adicionar linha na aba "Aderência" do Excel
- */
-async function adicionarLinhaAderencia(
-  token: string,
-  itemId: string,
-  abaId: string,
+  siteId: string,
+  listaId: string,
   dadosAderencia: Record<string, any>
-): Promise<{ id: string }> {
+): Promise<{ id: string; webUrl: string }> {
   try {
-    console.log("[SharePoint] Adicionando linha na aba Aderência...");
+    console.log("[SharePoint] Adicionando item à lista Aderência...");
 
-    // Preparar dados para a tabela Excel
-    // Assumindo que existe uma tabela nomeada "Aderência" ou "Aderencia"
-    const valores = [
-      dadosAderencia["N° ROTA"],
-      dadosAderencia["SETOR"],
-      dadosAderencia["TÉCNICO DE SEGURANÇA"],
-      dadosAderencia["MANUTENÇÃO"],
-      dadosAderencia["PRODUÇÃO"],
-      dadosAderencia["CONVIDADOS"],
-      dadosAderencia["TODOS PRESENTES?"],
-      dadosAderencia["DATA PREVISTA"],
-      dadosAderencia["DATA REALIZADA"],
-      dadosAderencia["STATUS"],
-    ];
-
-    // Usar Excel API para adicionar linha
+    // Chamar Microsoft Graph API para adicionar item
     const response = await axios.post(
-      `https://graph.microsoft.com/v1.0/me/drive/items/${itemId}/workbook/worksheets/${abaId}/tables/Aderência/rows/add`,
+      `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listaId}/items`,
       {
-        values: [valores],
+        fields: dadosAderencia,
       },
       {
         headers: {
@@ -270,13 +188,14 @@ async function adicionarLinhaAderencia(
       }
     );
 
-    console.log("[SharePoint Aderência] Linha adicionada com sucesso");
+    console.log("[SharePoint Aderência] Item adicionado com sucesso, ID:", response.data.id);
     
     return {
-      id: response.data.id || "novo-item",
+      id: response.data.id,
+      webUrl: response.data.webUrl || "",
     };
   } catch (error: any) {
-    console.error("[SharePoint Aderência] Erro ao adicionar linha:", error.message);
+    console.error("[SharePoint Aderência] Erro ao adicionar item:", error.message);
     if (error.response?.data) {
       console.error("[SharePoint Aderência] Detalhes do erro:", JSON.stringify(error.response.data, null, 2));
     }
@@ -294,7 +213,7 @@ export async function enviarDadosAderenciaSharePoint(
     // Validar dados obrigatórios
     const validacao = validarDadosAderencia(dados);
     if (!validacao.valido) {
-      console.warn("[SharePoint Aderência] Validação falhou:", validacao.erro);
+      console.warn("[Power Automate] Validação falhou:", validacao.erro);
       return { sucesso: false, mensagem: validacao.erro || "Validação falhou" };
     }
 
@@ -303,19 +222,19 @@ export async function enviarDadosAderenciaSharePoint(
 
     // Preparar dados com mapeamento exato para SharePoint
     const dadosAderencia = {
-      "N° ROTA": dados.numero_rota,
-      "SETOR": dados.setor,
-      "TÉCNICO DE SEGURANÇA": dados.tecnico_seguranca,
-      "MANUTENÇÃO": dados.manutencao,
-      "PRODUÇÃO": dados.producao,
-      "CONVIDADOS": dados.convidados || "",
-      "TODOS PRESENTES?": dados.todos_presentes,
-      "DATA PREVISTA": dados.data_prevista,
-      "DATA REALIZADA": dados.data_realizada || "",
-      "STATUS": status,
+      numero_rota: dados.numero_rota,
+      setor: dados.setor,
+      tecnico_seguranca: dados.tecnico_seguranca,
+      manutencao: dados.manutencao,
+      producao: dados.producao,
+      convidados: dados.convidados || "",
+      todos_presentes: dados.todos_presentes,
+      data_prevista: dados.data_prevista,
+      data_realizada: dados.data_realizada || "",
+      status: status,
     };
 
-    console.log("[SharePoint Aderência] Preparando envio com dados:", dadosAderencia);
+    console.log("[Power Automate] Preparando envio com dados:", dadosAderencia);
 
     // Tentar enviar para SharePoint
     try {
@@ -327,21 +246,26 @@ export async function enviarDadosAderenciaSharePoint(
       }
 
       const siteId = await obterSiteId(token, siteName);
-      const driveId = await obterDriveId(token, siteId);
-      const itemId = await obterIdArquivoExcel(token, driveId);
-      const abaId = await obterIdAbaAderencia(token, itemId);
-      const resultado = await adicionarLinhaAderencia(token, itemId, abaId, dadosAderencia);
+      const listaId = await obterIdListaAderencia(token, siteId);
+      const resultado = await adicionarItemAderencia(token, siteId, listaId, dadosAderencia);
       
       console.log("[SharePoint Aderência] ✅ Dados enviados com sucesso!");
       return {
         sucesso: true,
         mensagem: `Rota ${dados.numero_rota} registrada com sucesso na aba Aderência`,
-        itemId: resultado.id,
+        itemId: response.data?.id || "enviado",
       };
-    } catch (sharePointError: any) {
-      // Se falhar a autenticação ou envio, registrar erro mas não falhar completamente
-      console.warn("[SharePoint Aderência] ⚠️ Não foi possível enviar para SharePoint:", sharePointError.message);
-      console.log("[SharePoint Aderência] Dados que seriam enviados:", JSON.stringify(dadosAderencia, null, 2));
+    } catch (flowError: any) {
+      console.warn("[Power Automate] ⚠️ Erro ao enviar para o Flow:", flowError.message);
+      console.log("[Power Automate] Dados que seriam enviados:", JSON.stringify(dadosAderencia, null, 2));
+      
+      // Se falhar, registrar erro mas não falhar completamente
+      if (flowError.response?.status === 400 || flowError.response?.status === 401) {
+        console.error("[Power Automate] Erro de autenticação ou requisição inválida");
+        if (flowError.response?.data) {
+          console.error("[Power Automate] Detalhes:", JSON.stringify(flowError.response.data, null, 2));
+        }
+      }
       
       // Retornar sucesso mesmo sem enviar (dados estão registrados no console para debug)
       return {
@@ -350,7 +274,7 @@ export async function enviarDadosAderenciaSharePoint(
       };
     }
   } catch (error: any) {
-    console.error("[SharePoint Aderência] Erro ao enviar dados:", error.message);
+    console.error("[Power Automate] Erro ao enviar dados:", error.message);
     return {
       sucesso: false,
       mensagem: "Erro ao registrar rota no SharePoint",

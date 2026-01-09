@@ -38,11 +38,11 @@ interface SyncStatus {
 
 export default function Home() {
   const [metrics, setMetrics] = useState<SSTMetrics>({
-    totalRiscos: 737,
-    riscosAltos: 276,
-    riscosMedias: 251,
-    riscosCriticos: 3,
-    acoesConcluidas: 290,
+    totalRiscos: 0,
+    riscosAltos: 0,
+    riscosMedias: 0,
+    riscosCriticos: 0,
+    acoesConcluidas: 0,
   });
   const [loading, setLoading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -51,9 +51,26 @@ export default function Home() {
     status: 'idle'
   });
 
+  // Buscar métricas reais do banco de dados
+  const { data: metricsData } = trpc.sst.getMetrics.useQuery(undefined, {
+    refetchInterval: 30000, // Refetch a cada 30 segundos
+  });
+
   const { data: syncData } = trpc.sst.getSyncStatus.useQuery(undefined, {
     refetchInterval: 60000, // Refetch every minute
   });
+
+  useEffect(() => {
+    if (metricsData) {
+      setMetrics({
+        totalRiscos: metricsData.totalRiscos || 0,
+        riscosAltos: metricsData.riscosAltos || 0,
+        riscosMedias: metricsData.riscosMedias || 0,
+        riscosCriticos: metricsData.riscosCriticos || 0,
+        acoesConcluidas: metricsData.acoesConcluidas || 0,
+      });
+    }
+  }, [metricsData]);
 
   useEffect(() => {
     if (syncData) {
@@ -107,7 +124,7 @@ export default function Home() {
   };
 
   const handlePowerBIAccess = () => {
-    const powerbiUrl = "https://app.powerbi.com/groups/me/reports/32f295ad-5fde-40e7-bb48-7ad7593f3000?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&pbi_source=linkShare"
+    const powerbiUrl = "https://app.powerbi.com/groups/me/reports/5a087ca6-f606-4cb2-af76-6a3ca94a08c2/868e18c05a0d8320c33c?ctid=57a79bba-3c38-4dc9-b884-b899495e3e9c&experience=power-bi";
     try {
       window.open(powerbiUrl, "_blank");
       toast.success("Abrindo Dashboard PowerBI...");
