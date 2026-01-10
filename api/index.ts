@@ -1,23 +1,32 @@
-import express from 'express';
-import { createExpressMiddleware } from '@trpc/server/adapters/express';
-import { appRouter } from '../server/routers';
-import { createContext } from '../server/_core/trpc';
-import cors from 'cors';
+import "dotenv/config";
+import express from "express";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { registerOAuthRoutes } from "../server/_core/oauth";
+import { appRouter } from "../server/routers";
+import { createContext } from "../server/_core/trpc";
+import cors from "cors";
 
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-// Endpoint para o tRPC
-app.use('/api/trpc', createExpressMiddleware({
-  router: appRouter,
-  createContext,
-}));
+// OAuth callback under /api/oauth/callback
+registerOAuthRoutes(app);
 
-// Endpoint de saúde
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' });
+// tRPC API
+app.use(
+  "/api/trpc",
+  createExpressMiddleware({
+    router: appRouter,
+    createContext,
+  })
+);
+
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
 });
 
 export default app;
