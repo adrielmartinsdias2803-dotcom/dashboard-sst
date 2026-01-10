@@ -1,10 +1,10 @@
 import { COOKIE_NAME } from "@shared/const";
-import { getSessionCookieOptions } from "./_core/cookies";
-import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { getSessionCookieOptions } from "./cookies";
+import { systemRouter } from "./systemRouter";
+import { publicProcedure, router } from "./trpc";
 import { getSSTMetrics } from "./db-sst";
 import { getDb } from "./db";
-import { rotasAgendadas } from "../drizzle/schema";
+import { rotasAgendadas } from "../../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { z } from "zod";
 import { enviarDadosAderenciaSharePoint } from "./sharepoint-aderencia";
