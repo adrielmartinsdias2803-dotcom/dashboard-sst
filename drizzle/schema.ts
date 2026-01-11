@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, date, time, tinyint } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -40,3 +40,47 @@ export const sstMetrics = mysqlTable("sst_metrics", {
 
 export type SSTMetrics = typeof sstMetrics.$inferSelect;
 export type InsertSSTMetrics = typeof sstMetrics.$inferInsert;
+
+export const syncLogs = mysqlTable("sync_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  status: mysqlEnum("status", ["success", "error", "pending"]).notNull(),
+  message: text("message"),
+  errorDetails: text("error_details"),
+  recordsProcessed: int("records_processed").default(0),
+  lastSyncedAt: timestamp("last_synced_at"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SyncLog = typeof syncLogs.$inferSelect;
+export type InsertSyncLog = typeof syncLogs.$inferInsert;
+
+export const alertContacts = mysqlTable("alert_contacts", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  name: varchar("name", { length: 255 }),
+  isActive: tinyint("is_active").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AlertContact = typeof alertContacts.$inferSelect;
+export type InsertAlertContact = typeof alertContacts.$inferInsert;
+export const rotasAgendadas = mysqlTable("rotas_agendadas", {
+  id: int("id").autoincrement().primaryKey(),
+  dataRota: date("data_rota").notNull(),
+  horaRota: time("hora_rota").notNull(),
+  setor: varchar("setor", { length: 255 }).notNull(),
+  tecnicoSST: varchar("tecnico_sst", { length: 255 }).notNull(),
+  representanteManutenção: varchar("representante_manutencao", { length: 255 }).notNull(),
+  representanteProducao: varchar("representante_producao", { length: 255 }).notNull(),
+  convidados: text("convidados"),
+  observacoes: text("observacoes"),
+  status: mysqlEnum("status", ["pendente", "confirmada", "concluida", "cancelada"]).default("pendente").notNull(),
+  responsavelConfirmacao: varchar("responsavel_confirmacao", { length: 255 }),
+  dataConfirmacao: timestamp("data_confirmacao"),
+  observacoesConfirmacao: text("observacoes_confirmacao"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type RotaAgendada = typeof rotasAgendadas.$inferSelect;
+export type InsertRotaAgendada = typeof rotasAgendadas.$inferInsert;

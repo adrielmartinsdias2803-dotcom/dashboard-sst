@@ -15,6 +15,27 @@
       "when": 1767788341320,
       "tag": "0001_burly_tyrannus",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1767789107106,
+      "tag": "0002_famous_lifeguard",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1767841812821,
+      "tag": "0003_mixed_sumo",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1768000896068,
+      "tag": "0004_gigantic_groot",
+      "breakpoints": true
     }
   ]
 }
