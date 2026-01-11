@@ -14,7 +14,7 @@
       "maxDuration": 10,
       "includeFiles": ["server/**"]
     }
-  ],
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
