@@ -5,20 +5,23 @@
       "src": "client/index.html",
       "use": "@vercel/static-build",
       "config": { "distDir": "client/dist" }
-    },
-    {
-      "src": "server/index.ts",
-      "use": "@vercel/node"
     }
   ],
-  "rewrites": [
+  "functions": {
+    "server/index.ts": {
+      "runtime": "@vercel/node",
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/server/index.ts"
+      "src": "/api/(.*)",
+      "dest": "/server"
     },
     {
-      "source": "/(.*)",
-      "destination": "/client/dist/index.html"
+      "src": "/(.*)",
+      "dest": "/client/dist/$1"
     }
   ]
 }
