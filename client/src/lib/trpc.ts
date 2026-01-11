@@ -1,5 +1,5 @@
 import { createTRPCReact, httpBatchLink } from "@trpc/react-query";
-import type { AppRouter } from "../../server/routers"; // Esta importação será corrigida abaixo
+import type { AppRouter } from "../../../server/routers"; // Esta importação será corrigida abaixo
 
 export const trpc = createTRPCReact<AppRouter>();
 
