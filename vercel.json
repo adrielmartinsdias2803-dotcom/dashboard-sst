@@ -14,11 +14,11 @@
       "maxDuration": 10,
       "includeFiles": ["server/**"]
     }
-  },
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/server"
+      "destination": "/server/index.ts"
     },
     {
       "source": "/(.*)",
